@@ -159,9 +159,9 @@ lib_help()
 cmd dir_diff "compare listings of two specified directories"
 dir_diff()
 {
-	find $1 -type f -printf "%P\n" | sort > $1/list.tmp
-	find $2 -type f -printf "%P\n" | sort > $2/list.tmp
-	kdiff3 $1/list.tmp $2/list.tmp
+	find "$1" -type f -printf "%P\n" | sort > "$1/list.tmp"
+	find "$2" -type f -printf "%P\n" | sort > "$2/list.tmp"
+	kdiff3 "$1/list.tmp" "$2/list.tmp"
 }
 
 cmd retry "retry argument operation till success"
@@ -177,8 +177,8 @@ cmd git_ign_add "add files' names with path to appropriate .gitignore list"
 git_ign_add()
 {
 	for a in $*;  do
-		echo $a
-		(cd `dirname $a`; \ls -d `basename $a` -1  >> .gitignore; git add .gitignore )
+		echo "$a"
+		(cd `dirname "$a"`; \ls -d `basename "$a"` -1  >> .gitignore; git add .gitignore )
 	done
 }
 
@@ -230,37 +230,37 @@ cmd name_get "returns just filename without path and extension"
 name_get()
 {
 	a=${1##*/}
-	echo ${a%.*}
+	echo "${a%.*}"
 }
 
 cmd postfix_extract "return filename postfix:  path/name[-_]postfix.ext -> postfix"
 postfix_extract()
 {
 	a=${1%.*}
-	echo ${a##*[-_]}
+	echo "${a##*[-_]}"
 }
 
 cmd unzip_dir "handy unzip to directory with name of zip-file"
 unzip_dir()
 {
-	unzip "$@" -d `name_get $1`
+	unzip "$@" -d `name_get "$1"`
 }
 
 cmd mac_to_ip "looks in LAN IP for MAC"
 mac_to_ip()
 {
 	ping -q -c 4 -b 255.255.255.255 &> /dev/null
-	arp -n | grep -i $1 | cut -f 1 -d ' ' 
+	arp -n | grep -i "$1" | cut -f 1 -d ' ' 
 }
 
 cmd ip_to_mac "show MAC address for specified IP in LAN"
 ip_to_mac()
 {
 	if which arping > /dev/null; then
-		arping -c 1 $1 2> /dev/null | perl -ne '/.*\[(.*)\].*/ && print "$1\n"'
+		arping -c 1 "$1" 2> /dev/null | perl -ne '/.*\[(.*)\].*/ && print "$1\n"'
 	else
-		ping -c 1 -w 1 $1 &> /dev/null
-		arp -na | grep $1 | cut -f 4 -d ' '
+		ping -c 1 -w 1 "$1" &> /dev/null
+		arp -na | grep "$1" | cut -f 4 -d ' '
 	fi
 }
 
@@ -280,10 +280,10 @@ cmd gcc_set "set specified compiler as default (in variable CC) and cross compil
 gcc_set()
 {
 	export PATH=/usr/sbin:/usr/bin:/sbin:/bin:~/cmnd
-	gcc=`readlink --canonicalize $1`
-	path=`dirname $gcc`
-	PATH_add $path
-	file=`basename $gcc`
+	gcc=`readlink --canonicalize "$1"`
+	path=`dirname "$gcc"`
+	PATH_add "$path"
+	file=`basename "$gcc"`
 	export CROSS_COMPILE=${file%-*}- # delete shortest from the end
 	export CC=${CROSS_COMPILE}gcc
 	export AR=${CROSS_COMPILE}ar
@@ -292,7 +292,7 @@ gcc_set()
 	export CPP=${CROSS_COMPILE}cpp
 	export CXX=${CROSS_COMPILE}c++
 	echo Using:
-	which $CC
+	which "$CC"
 	mach=`$CC -dumpmachine`
 	ARCH=${mach%%-*}
 	PS1='$ARCH \w \$ '
@@ -329,8 +329,8 @@ cmd md5sum_make "create md5 files for each specified file separately"
 md5sum_make()
 {
 	while [ -n "$1" ]; do
-	md5sum $1 > $1.md5
-	echo $1.md5
+	md5sum "$1" > "$1.md5"
+	echo "$1.md5"
 	shift
 	done
 }
@@ -379,6 +379,6 @@ else
 		echo Lib.sh functions are loaded into the shell environment
 	else
 		echo Lib.sh - a library of shell utility functions
-		echo To get help run \"`basename $0` lib_help\"
+		echo To get help run \"`basename "$0"` lib_help\"
 	fi
 fi
