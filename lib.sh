@@ -38,7 +38,7 @@ cmd()
 }
 
 export GREP_OPTIONS="--devices=skip " # avoid hanging grep on devices
-export GREP_COLORS='ms=01;38:mc=01;31:sl=02;38:cx=:fn=32:ln=32:bn=32:se=36' # print found in bold
+export GREP_COLORS='ms=01;38:mc=01;31:sl=02;38:cx=:fn=32:ln=32:bn=32:se=36' # print matched text in bold
 
 cmd ps-all "lists all processes"
 alias ps-all='ps -AF'
