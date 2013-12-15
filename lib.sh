@@ -6,39 +6,38 @@
 #
 # GPL License
 
+usage="\
+lib.sh - Library of shell functions
+===
+Usage:
+
+Load commands to shell:
+ . lib.sh
+
+Run a command with subshell:
+ lib.sh <command> <arguments...>
+
+"
+
 ###############################################################################
 #	Common stuff
 
 MYSHELL=`/bin/ps -p $$ -o command=| sed "s:$0::;s:busybox ::"`
 export tab=`echo -e "\t"`
 
-if [ "$0" == "-bash" ]; then
-	ME=""
-else
-	ME="$0"
-fi
-
-usage="\
-Usage:
-
-Load commands to shell:
-. $ME
-
-Run a command with subshell:
-$0 <command> <arguments...>
-
-List of available commands:
-"
-
-export HISTIGNORE="&:ls:[bf]g:exit"
-
 cmd()
 {
 	usage="$usage $1 - $2\n"
 }
 
+###############################################################################
+#	Short useful definitions and aliases
+
 export GREP_OPTIONS="--devices=skip " # avoid hanging grep on devices
 export GREP_COLORS='ms=01;38:mc=01;31:sl=02;38:cx=:fn=32:ln=32:bn=32:se=36' # print matched text in bold
+export HISTIGNORE="&:ls:[bf]g:exit"
+
+usage="$usage\nList of available commands:\n"
 
 cmd ps-all "lists all processes"
 alias ps-all='ps -AF'
@@ -82,6 +81,9 @@ git_prompt()
 	PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
 }
 
+###############################################################################
+#	Shell functions
+
 cmd system_status_short "shows short summary of system resources (RAM,CPU) usage"
 system_status_short()
 {
@@ -92,7 +94,7 @@ system_status_short()
 	ps-mem
 }
 
-cmd "shows long system status by running various system utilites"
+cmd system_status_long "shows long system status and statistics by running various system utilities"
 system_status_long()
 {
 	top -bn1 | head --lines 20
@@ -201,7 +203,7 @@ duplicate()
 		| cut -f 2 \
 		| perl -pe "s/\n/\0/g" \
 		| xargs -0 -i{} sha1sum "{}" | sort \
-		| uniq --all-repeated=separate -w32 | cut -d ' ' -f 3 
+		| uniq --all-repeated=separate -w32 | cut -d ' ' -f 3
 }
 
 cmd for_each "applies an operation to set of arguments one by one"
@@ -250,7 +252,7 @@ cmd mac_to_ip "looks in LAN IP for MAC"
 mac_to_ip()
 {
 	ping -q -c 4 -b 255.255.255.255 &> /dev/null
-	arp -n | grep -i "$1" | cut -f 1 -d ' ' 
+	arp -n | grep -i "$1" | cut -f 1 -d ' '
 }
 
 cmd ip_to_mac "show MAC address for specified IP in LAN"
@@ -346,7 +348,7 @@ check()
 # used in lib_sh_demo only
 v()
 {
-	echo ">" "$@" 
+	echo ">" "$@"
 	eval "$@"
 }
 
@@ -374,7 +376,7 @@ lib_sh_demo()
 
 if [ -n "$*" ]; then
 	eval "$*" # execute arguments
-	echo $* finished, ret=$?
+	#echo $* finished, ret=$?
 else
 	if [ `which "$0"` = "$SHELL" ]; then
 		echo Lib.sh functions are loaded into the shell environment
