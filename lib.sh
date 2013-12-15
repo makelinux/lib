@@ -29,6 +29,13 @@ cmd()
 	usage="$usage $1 - $2\n"
 }
 
+cmd lib_help "shows help for Lib.sh"
+lib_help()
+{
+	echo -e "$usage"
+}
+
+
 ###############################################################################
 #	Short useful definitions and aliases
 
@@ -150,12 +157,6 @@ proc_mem_usage()
 
 cmd tcpdump-text "tcpdump of payload in text"
 alias tcpdump-text="sudo tcpdump -l -s 0 -A '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'"
-
-cmd lib_help "shows help for Lib.sh"
-lib_help()
-{
-	echo -e "$usage"
-}
 
 cmd dir_diff "compare listings of two specified directories"
 dir_diff()
