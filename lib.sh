@@ -350,6 +350,7 @@ v()
 	eval "$@"
 }
 
+cmd lib_sh_demo "run lib.sh functions for demonstration and testing"
 lib_sh_demo()
 {
 	v ext_get aaa.bbb
