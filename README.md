@@ -1,5 +1,6 @@
 lib.sh - Library of shell functions
 ===
+<pre>
 Usage:
 
 Load commands to shell:
