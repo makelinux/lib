@@ -16,7 +16,6 @@ Load commands to shell:
 
 Run a command with subshell:
  lib.sh <command> <arguments...>
-
 "
 
 ###############################################################################
