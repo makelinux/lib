@@ -7,6 +7,7 @@ Load commands to shell:
 
 Run a command with subshell:
 * lib.sh \<command\> \<arguments...\>
+* lib_help - shows help for Lib.sh
 
 List of available commands:
 * ps-all - lists all processes
@@ -29,7 +30,6 @@ List of available commands:
 * ps_of - specified process info
 * proc_mem_usage - returns percentage memory usage by sc
 * tcpdump-text - tcpdump of payload in text
-* lib_help - shows help for Lib.sh
 * dir_diff - compare listings of two specified directories
 * retry - retry argument operation till success
 * git_ign_add - add files' names with path to appropriate .gitignore list

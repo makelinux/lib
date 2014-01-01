@@ -63,8 +63,13 @@ alias ps-mem="ps -e  -o pmem,vsz,rss,pid,comm --sort -%mem  | head -n 5"
 cmd ps-wchan "shows what processes are waiting for, used in debugging blocked processes"
 alias ps-wchan="ps -e -o pid,comm,wchan"
 
-cmd ls-size "list files with sizes in bytes, shorter than ls -l"
-alias ls-size='ls -s --block-size=1 -1'
+cmd ls_size "list files with sizes in bytes, shorter than ls -l"
+#alias ls-size='ls -s --block-size=1 -1'
+#alias ls-size='stat -c "%s$tab%n"'
+ls_size() { stat -c "%s$tab%n" `\ls "$@"`; }
+
+cmd mplayer-rotate-right "play video rotated right, used to play vertically captured videos"
+alias mplayer-rotate-right="mplayer -vf rotate=1"
 
 cmd hist "handy history, up to one screen length"
 alias hist='history $((LINES-2))'
@@ -80,6 +85,9 @@ alias git-diff-HEAD="git diff HEAD"
 
 cmd git-diff-last-commit "shows last git commit"
 alias git-diff-last-commit="git log -p -n 1"
+
+cmd readline-bindings "shows current readline bindings, used as shell keyboard shortcuts, in more readable format"
+alias readline-bindings='bind -P | grep -v "is not bound" | sed "s/ can be found on/:/;s.\\\C-.^.;s/\\\e/[esc]/g;"'
 
 cmd git_prompt "sets shell prompt to show git branch"
 git_prompt()
@@ -198,8 +206,8 @@ duplicate()
 	find "$@" -type f -not -regex '.*/\.svn/.*' -printf "%10i\t%10s\t%p\n" \
 		| sort -n \
 		| uniq --unique -w10 \
-		| cut -f 2,3 \
-		| sort -n | uniq --all-repeated -w 10 \
+		| cut -f 2,3 | sort -n \
+		| uniq --all-repeated -w 10 \
 		| cut -f 2 \
 		| perl -pe "s/\n/\0/g" \
 		| xargs -0 -i{} sha1sum "{}" | sort \
@@ -273,15 +281,22 @@ fs_usage()
 	df "$@"
 }
 
+
+cmd "PATH_add add argument to PATH if required"
 PATH_add()
 {
-	export PATH="$PATH:$1"
+	if [[ ":$PATH:" == *":$1:"* ]]
+	then
+		echo "$1 is already in path"
+	else
+		export PATH="$PATH:$1"
+	fi
 }
 
-cmd gcc_set "set specified compiler as default (in variable CC) and cross compiler"
+cmd gcc_set "set specified [cross] compiler as default in environment"
 gcc_set()
 {
-	export PATH=/usr/sbin:/usr/bin:/sbin:/bin:~/cmnd
+	#export PATH=/usr/sbin:/usr/bin:/sbin:/bin:
 	gcc=`readlink --canonicalize "$1"`
 	path=`dirname "$gcc"`
 	PATH_add "$path"
@@ -296,7 +311,7 @@ gcc_set()
 	echo Using:
 	which "$CC"
 	mach=`$CC -dumpmachine`
-	ARCH=${mach%%-*}
+	export ARCH=${mach%%-*}
 	PS1='$ARCH \w \$ '
 	$CC -v 2>&1  | grep 'gcc version'
 }
