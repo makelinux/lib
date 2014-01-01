@@ -282,7 +282,7 @@ fs_usage()
 }
 
 
-cmd "PATH_add add argument to PATH if required"
+cmd PATH_add "adds argument to PATH, if required"
 PATH_add()
 {
 	if [[ ":$PATH:" == *":$1:"* ]]

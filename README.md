@@ -16,12 +16,14 @@ List of available commands:
 * ps-cpu - lists most CPU consuming processes
 * ps-mem - lists most memory consuming processes
 * ps-wchan - shows what processes are waiting for, used in debugging blocked processes
-* ls-size - list files with sizes in bytes, shorter than ls -l
+* ls_size - list files with sizes in bytes, shorter than ls -l
+* mplayer-rotate-right - play video rotated right, used to play vertically captured videos
 * hist - handy history, up to one screen length
 * deb-list - list content of specified deb file
 * git-diff - handy git diff
 * git-diff-HEAD - show the differences between your working directory and the most recent commit
 * git-diff-last-commit - shows last git commit
+* readline-bindings - shows current readline bindings, used as shell keyboard shortcuts, in more readable format
 * git_prompt - sets shell prompt to show git branch
 * system_status_short - shows short summary of system resources (RAM,CPU) usage
 * system_status_long - shows long system status and statistics by running various system utilities
@@ -43,7 +45,8 @@ List of available commands:
 * mac_to_ip - looks in LAN IP for MAC
 * ip_to_mac - show MAC address for specified IP in LAN
 * fs_usage - show biggest directories and optionally files on a filesystem, for exampe on root: fs_usage -a /
-* gcc_set - set specified compiler as default (in variable CC) and cross compiler
+* PATH_add - adds argument to PATH, if required
+* gcc_set - set specified [cross] compiler as default in environment
 * mem_drop_caches - drop chaches and free this memory. Practically not required
 * mem_avail_kb - Returns available for allocation RAM, which is sum of MemFree, Buffers and Cached memory
 * wget_as_me - Run wget with cookies from firefox to access authenticated data
