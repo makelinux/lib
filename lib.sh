@@ -35,7 +35,6 @@ lib_help()
 	echo -e "$usage"
 }
 
-
 ###############################################################################
 #	Short useful definitions and aliases
 
@@ -75,16 +74,7 @@ cmd hist "handy history, up to one screen length"
 alias hist='history $((LINES-2))'
 
 cmd deb-list "list content of specified deb file"
-alias deb-list="dpkg-deb --contents"
-
-cmd git-diff "handy git diff"
-alias git-diff='git diff --relative --no-prefix -w'
-
-cmd git-diff-HEAD "show the differences between your working directory and the most recent commit"
-alias git-diff-HEAD="git diff HEAD"
-
-cmd git-diff-last-commit "shows last git commit"
-alias git-diff-last-commit="git log -p -n 1"
+alias deb-list="dpkg-deb --contents" 
 
 ansi_rev=$'\e[7m'
 ansi_norm=$'\e[0m'
@@ -109,12 +99,39 @@ alias readline-bindings='(bind -P | grep -v "is not bound" | nl |
 		| expand; \
 		echo \"^\" = Ctrl, \"+\" = Escape) | quotation_highlight '
 
+cmd tcpdump-text "tcpdump of payload in text"
+alias tcpdump-text="sudo tcpdump -l -s 0 -A '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'"
 
+# git helpers
+
+cmd git-diff "handy git diff"
+alias git-diff='git diff --relative --no-prefix -w'
+
+cmd git-diff-HEAD "show the differences between your working directory and the most recent commit"
+alias git-diff-HEAD="git diff HEAD"
+
+cmd git-diff-last-commit "shows last git commit"
+alias git-diff-last-commit="git log -p -n 1"
 
 cmd git_prompt "sets shell prompt to show git branch"
 git_prompt()
 {
 	PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
+}
+
+cmd git_fixup "interactive fixup of specified number of last git commits"
+git_fixup()
+{
+	git rebase -i HEAD~$1 .
+}
+
+cmd git_ign_add "add files' names with path to appropriate .gitignore list"
+git_ign_add()
+{
+	for a in $*;  do
+		echo "$a"
+		(cd `dirname "$a"`; \ls -d `basename "$a"` -1  >> .gitignore; git add .gitignore )
+	done
 }
 
 ###############################################################################
@@ -165,12 +182,6 @@ shell_type()
 	fi
 }
 
-cmd git_fixup "interactive fixup of specified number of last git commits"
-git_fixup()
-{
-	git rebase -i HEAD~$1 .
-}
-
 cmd ps_of "specified process info"
 ps_of()
 {
@@ -178,15 +189,11 @@ ps_of()
 	ps u `pidof "$@"`
 }
 
-cmd proc_mem_usage "returns percentage memory usage by sc"
+cmd proc_mem_usage "returns percentage memory usage by specified process"
 proc_mem_usage()
 {
 	ps h -o pmem -C "$1"
 }
-
-
-cmd tcpdump-text "tcpdump of payload in text"
-alias tcpdump-text="sudo tcpdump -l -s 0 -A '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'"
 
 cmd dir_diff "compare listings of two specified directories"
 dir_diff()
@@ -202,15 +209,6 @@ retry()
 	# see also "watch"
 	while ( ! "$@" ) do
 	echo retry
-	done
-}
-
-cmd git_ign_add "add files' names with path to appropriate .gitignore list"
-git_ign_add()
-{
-	for a in $*;  do
-		echo "$a"
-		(cd `dirname "$a"`; \ls -d `basename "$a"` -1  >> .gitignore; git add .gitignore )
 	done
 }
 
@@ -303,7 +301,6 @@ fs_usage()
 	df "$@"
 }
 
-
 cmd PATH_add "adds argument to PATH, if required"
 PATH_add()
 {
@@ -359,8 +356,7 @@ wget_as_me()
 cmd calc "calculate with bc specified floating point expression"
 calc()
 {
-	# see a
-	lso http://www.isthe.com/chongo/tech/comp/calc/
+	# see also http://www.isthe.com/chongo/tech/comp/calc/
 	echo "scale=4;" "$@" | bc
 }
 
@@ -379,8 +375,7 @@ check()
 {
 	echo -n "Runnung: $@ : "
 	eval "$@" && echo -e "$? \033[2;32mOK \033[0;39m" || echo -e "$? \033[2;31mFail \033[0;39m"
-}
-
+} 
 
 # used in lib_sh_demo only
 v()

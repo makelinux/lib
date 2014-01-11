@@ -20,22 +20,22 @@ List of available commands:
 * mplayer-rotate-right - play video rotated right, used to play vertically captured videos
 * hist - handy history, up to one screen length
 * deb-list - list content of specified deb file
+* quotation_highlight - higlight text in quotation marks ("quotation")
+* readline-bindings - shows current readline bindings, used as shell keyboard shortcuts, in more readable format, see also man readline
+* tcpdump-text - tcpdump of payload in text
 * git-diff - handy git diff
 * git-diff-HEAD - show the differences between your working directory and the most recent commit
 * git-diff-last-commit - shows last git commit
-* quotation_highlight - higlight text in quotation marks ("quotation")
-* readline-bindings - shows current readline bindings, used as shell keyboard shortcuts, in more readable format, see also man readline
 * git_prompt - sets shell prompt to show git branch
+* git_fixup - interactive fixup of specified number of last git commits
+* git_ign_add - add files' names with path to appropriate .gitignore list
 * system_status_short - shows short summary of system resources (RAM,CPU) usage
 * system_status_long - shows long system status and statistics by running various system utilities
 * shell_type - tries to identify type of current shell
-* git_fixup - interactive fixup of specified number of last git commits
 * ps_of - specified process info
-* proc_mem_usage - returns percentage memory usage by sc
-* tcpdump-text - tcpdump of payload in text
+* proc_mem_usage - returns percentage memory usage by specified process
 * dir_diff - compare listings of two specified directories
 * retry - retry argument operation till success
-* git_ign_add - add files' names with path to appropriate .gitignore list
 * duplicates - finds duplicate files. To follow symbolic links run duplicate -L $DIR
 * for_each - applies an operation to set of arguments one by one
 * ext_get - extracts extension from specified filename
