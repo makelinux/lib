@@ -23,7 +23,8 @@ List of available commands:
 * git-diff - handy git diff
 * git-diff-HEAD - show the differences between your working directory and the most recent commit
 * git-diff-last-commit - shows last git commit
-* readline-bindings - shows current readline bindings, used as shell keyboard shortcuts, in more readable format
+* quotation_highlight - higlight text in quotation marks ("quotation")
+* readline-bindings - shows current readline bindings, used as shell keyboard shortcuts, in more readable format, see also man readline
 * git_prompt - sets shell prompt to show git branch
 * system_status_short - shows short summary of system resources (RAM,CPU) usage
 * system_status_long - shows long system status and statistics by running various system utilities
@@ -35,7 +36,7 @@ List of available commands:
 * dir_diff - compare listings of two specified directories
 * retry - retry argument operation till success
 * git_ign_add - add files' names with path to appropriate .gitignore list
-* duplicate - finds duplicate files. To follow symbolic links run duplicate -L $DIR
+* duplicates - finds duplicate files. To follow symbolic links run duplicate -L $DIR
 * for_each - applies an operation to set of arguments one by one
 * ext_get - extracts extension from specified filename
 * ext_strip - returns filename without extension

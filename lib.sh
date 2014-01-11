@@ -22,7 +22,7 @@ Run a command with subshell:
 #	Common stuff
 
 MYSHELL=`/bin/ps -p $$ -o command=| sed "s:$0::;s:busybox ::"`
-export tab=$`\t`
+export tab=$'\t'
 
 cmd()
 {
@@ -214,8 +214,8 @@ git_ign_add()
 	done
 }
 
-cmd duplicate 'finds duplicate files. To follow symbolic links run duplicate -L $DIR'
-duplicate()
+cmd duplicates 'finds duplicate files. To follow symbolic links run duplicate -L $DIR'
+duplicates()
 {
 	# Features:
 	# Fast because checks sizes first
