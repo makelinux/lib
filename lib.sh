@@ -294,7 +294,7 @@ ip_to_mac()
 	fi
 }
 
-cmd fs_usage "show biggest directories and optionally files on a filesystem, for exampe on root: fs_usage -a /"
+cmd fs_usage "show biggest directories and optionally files on a filesystem, for example on root: fs_usage -a /"
 fs_usage()
 {
 	du --one-file-system "$@" | sort -n | tail -n $((LINES-2))
