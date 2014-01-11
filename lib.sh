@@ -22,7 +22,7 @@ Run a command with subshell:
 #	Common stuff
 
 MYSHELL=`/bin/ps -p $$ -o command=| sed "s:$0::;s:busybox ::"`
-export tab=`echo -e "\t"`
+export tab=$`\t`
 
 cmd()
 {
@@ -86,8 +86,30 @@ alias git-diff-HEAD="git diff HEAD"
 cmd git-diff-last-commit "shows last git commit"
 alias git-diff-last-commit="git log -p -n 1"
 
-cmd readline-bindings "shows current readline bindings, used as shell keyboard shortcuts, in more readable format"
-alias readline-bindings='bind -P | grep -v "is not bound" | sed "s/ can be found on/:/;s.\\\C-.^.;s/\\\e/[esc]/g;"'
+ansi_rev=$'\e[7m'
+ansi_norm=$'\e[0m'
+cmd quotation_highlight "higlight text in quotation marks (\"quotation\")"
+alias quotation_highlight=' sed "
+	s|\\\\\\\\|:dbs:|g;
+	s|\\\\\"|:bsq:|g;
+	s|\\\\\"|:quotation:|g;
+	s|\"\([^\"]*\?\)\"| $ansi_rev\1$ansi_norm |g;
+	s|:quotation:|\\\\\"|g;
+	s|:bsq:|\\\\\\\"|g;
+	s|:dbs:|\\\\\\\\|g"'
+cmd readline-bindings "shows current readline bindings, used as shell keyboard shortcuts, in more readable format, see also man readline"
+alias readline-bindings='(bind -P | grep -v "is not bound" | nl | 
+	sed "
+		s| can be found on|:|;
+		s|.$||;
+		s|, \+| |g;
+		s|\\\C-|^|g
+		s|\\\e|+|g;" \
+		| pr --omit-header --expand-tabs --columns=2 -w $COLUMNS \
+		| expand; \
+		echo \"^\" = Ctrl, \"+\" = Escape) | quotation_highlight '
+
+
 
 cmd git_prompt "sets shell prompt to show git branch"
 git_prompt()
