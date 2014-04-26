@@ -139,7 +139,7 @@ git_ign_add()
 cmd trap_err "traps command failures, print reuturn value and returns, better than set -o errexit"
 trap_err()
 {
-	trap 'echo -e $"aaa\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO}" > /dev/stderr;return 2> /dev/null\' ERR
+	trap 'echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO}" > /dev/stderr;return 2> /dev/null\' ERR
 }
 
 ###############################################################################
@@ -170,6 +170,16 @@ system_status_long()
 	vmstat -S M -s
 	echo
 	df --all --human-readable
+	echo
+	lsblk
+	echo
+	lscpu
+	echo
+	lsusb
+	echo
+	lspci
+	echo
+	lshw -short
 }
 
 cmd shell_type "tries to identify type of current shell"
