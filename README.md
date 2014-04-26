@@ -23,12 +23,14 @@ List of available commands:
 * quotation_highlight - higlight text in quotation marks ("quotation")
 * readline-bindings - shows current readline bindings, used as shell keyboard shortcuts, in more readable format, see also man readline
 * tcpdump-text - tcpdump of payload in text
+* make-debug - verbose make
 * git-diff - handy git diff
 * git-diff-HEAD - show the differences between your working directory and the most recent commit
 * git-diff-last-commit - shows last git commit
 * git_prompt - sets shell prompt to show git branch
 * git_fixup - interactive fixup of specified number of last git commits
 * git_ign_add - add files' names with path to appropriate .gitignore list
+* trap_err - traps command failures, print reuturn value and returns, better than set -o errexit
 * system_status_short - shows short summary of system resources (RAM,CPU) usage
 * system_status_long - shows long system status and statistics by running various system utilities
 * shell_type - tries to identify type of current shell
@@ -45,7 +47,7 @@ List of available commands:
 * unzip_dir - handy unzip to directory with name of zip-file
 * mac_to_ip - looks in LAN IP for MAC
 * ip_to_mac - show MAC address for specified IP in LAN
-* fs_usage - show biggest directories and optionally files on a filesystem, for exampe on root: fs_usage -a /
+* fs_usage - show biggest directories and optionally files on a filesystem, for example on root: fs_usage -a /
 * PATH_add - adds argument to PATH, if required
 * gcc_set - set specified [cross] compiler as default in environment
 * mem_drop_caches - drop chaches and free this memory. Practically not required

@@ -74,7 +74,7 @@ cmd hist "handy history, up to one screen length"
 alias hist='history $((LINES-2))'
 
 cmd deb-list "list content of specified deb file"
-alias deb-list="dpkg-deb --contents" 
+alias deb-list="dpkg-deb --contents"
 
 ansi_rev=$'\e[7m'
 ansi_norm=$'\e[0m'
@@ -88,7 +88,7 @@ alias quotation_highlight=' sed "
 	s|:bsq:|\\\\\\\"|g;
 	s|:dbs:|\\\\\\\\|g"'
 cmd readline-bindings "shows current readline bindings, used as shell keyboard shortcuts, in more readable format, see also man readline"
-alias readline-bindings='(bind -P | grep -v "is not bound" | nl | 
+alias readline-bindings='(bind -P | grep -v "is not bound" | nl |
 	sed "
 		s| can be found on|:|;
 		s|.$||;
@@ -101,6 +101,9 @@ alias readline-bindings='(bind -P | grep -v "is not bound" | nl |
 
 cmd tcpdump-text "tcpdump of payload in text"
 alias tcpdump-text="sudo tcpdump -l -s 0 -A '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'"
+
+cmd make-debug "verbose make"
+alias make-debug="remake --debug=bv SHELL='/bin/bash -vx' "
 
 # git helpers
 
@@ -133,6 +136,11 @@ git_ign_add()
 		(cd `dirname "$a"`; \ls -d `basename "$a"` -1  >> .gitignore; git add .gitignore )
 	done
 }
+cmd trap_err "traps command failures, print reuturn value and returns, better than set -o errexit"
+trap_err()
+{
+	trap 'echo -e $"aaa\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO}" > /dev/stderr;return 2> /dev/null\' ERR
+}
 
 ###############################################################################
 #	Shell functions
@@ -150,6 +158,7 @@ system_status_short()
 cmd system_status_long "shows long system status and statistics by running various system utilities"
 system_status_long()
 {
+	grep "" /etc/issue /etc/*release
 	top -bn1 | head --lines 20
 	echo
 	free -m
@@ -209,6 +218,7 @@ retry()
 	# see also "watch"
 	while ( ! "$@" ) do
 	echo retry
+	sleep 1
 	done
 }
 
@@ -219,7 +229,7 @@ duplicates()
 	# Fast because checks sizes first
 	# and filters same linked files by checking inode (%i)
 	# - Sorts files by size to help you to delete biggest files first
-	
+
 	# Troubleshooting:
 	# on out of memory define TMPDIR
 
@@ -375,7 +385,7 @@ check()
 {
 	echo -n "Runnung: $@ : "
 	eval "$@" && echo -e "$? \033[2;32mOK \033[0;39m" || echo -e "$? \033[2;31mFail \033[0;39m"
-} 
+}
 
 # used in lib_sh_demo only
 v()
@@ -397,7 +407,7 @@ lib_sh_demo()
 	cp dup/1 dup/1.1
 	cp dup/1 dup/sub/
 	echo 2 > dup/2
-	
+
 	v duplicate dup
 	v mem_avail_kb
 	check true
