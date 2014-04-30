@@ -139,7 +139,7 @@ git_ign_add()
 cmd trap_err "traps command failures, print reuturn value and returns, better than set -o errexit"
 trap_err()
 {
-	trap 'echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO}" > /dev/stderr;return 2> /dev/null\' ERR
+	trap 'echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO}" > /dev/stderr;return 2> /dev/null' ERR
 }
 
 ###############################################################################
@@ -361,6 +361,7 @@ alias mem_drop_caches="sync; echo 3 | sudo tee /proc/sys/vm/drop_caches"
 cmd mem_avail_kb "Returns available for allocation RAM, which is sum of MemFree, Buffers and Cached memory"
 mem_avail_kb()
 {
+	# also free | grep cache | awk '/[0-9]/{ print $4" KB" }'
 	echo $(($(echo `sed -n '2p;3p;4p' <  /proc/meminfo | sed "s/ \+/ /g" | cut -d' ' -f 2 ` | sed "s/ /+/g") ))
 }
 
