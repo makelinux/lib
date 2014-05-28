@@ -251,7 +251,8 @@ duplicates()
 		| cut -f 2 \
 		| perl -pe "s/\n/\0/g" \
 		| xargs -0 -i{} sha1sum "{}" | sort \
-		| uniq --all-repeated=separate -w32 | cut -d ' ' -f 3
+		| uniq --all-repeated=separate -w32 \
+		| cut -d ' ' -f 3-
 }
 
 cmd for_each "applies an operation to set of arguments one by one"
