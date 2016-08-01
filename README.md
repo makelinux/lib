@@ -25,8 +25,6 @@ List of available commands:
 * tcpdump-text - tcpdump of payload in text
 * make-debug - verbose make
 * git-diff - handy git diff
-* git-diff-HEAD - show the differences between your working directory and the most recent commit
-* git-diff-last-commit - shows last git commit
 * git_prompt - sets shell prompt to show git branch
 * git_fixup - interactive fixup of specified number of last git commits
 * git_ign_add - add files' names with path to appropriate .gitignore list

@@ -110,12 +110,6 @@ alias make-debug="remake --debug=bv SHELL='/bin/bash -vx' "
 cmd git-diff "handy git diff"
 alias git-diff='git diff --relative --no-prefix -w'
 
-cmd git-diff-HEAD "show the differences between your working directory and the most recent commit"
-alias git-diff-HEAD="git diff HEAD"
-
-cmd git-diff-last-commit "shows last git commit"
-alias git-diff-last-commit="git log -p -n 1"
-
 cmd git_prompt "sets shell prompt to show git branch"
 git_prompt()
 {
