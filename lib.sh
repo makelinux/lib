@@ -23,6 +23,7 @@ Run a command with subshell:
 
 MYSHELL=`/bin/ps -p $$ -o command=| sed "s:$0::;s:busybox ::"`
 export tab=$'\t'
+export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
 
 cmd()
 {
