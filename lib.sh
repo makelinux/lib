@@ -38,7 +38,7 @@ lib_help()
 ###############################################################################
 #	Short useful definitions and aliases
 
-export GREP_OPTIONS="--devices=skip " # avoid hanging grep on devices
+export GREP_OPTIONS="--devices=skip --color=auto " # avoid hanging grep on devices
 export GREP_COLORS='ms=01;38:mc=01;31:sl=02;38:cx=:fn=32:ln=32:bn=32:se=36' # print matched text in bold
 export HISTIGNORE="&:ls:[bf]g:exit"
 
@@ -100,7 +100,7 @@ alias readline-bindings='(bind -P | grep -v "is not bound" | nl |
 		echo \"^\" = Ctrl, \"+\" = Escape) | quotation_highlight '
 
 cmd tcpdump-text "tcpdump of payload in text"
-alias tcpdump-text="sudo tcpdump -l -s 0 -A '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'"
+alias tcpdump-text="sudo tcpdump -l -s 0 -A '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0) and'"
 
 cmd make-debug "verbose make"
 alias make-debug="remake --debug=bv SHELL='/bin/bash -vx' "
@@ -136,10 +136,11 @@ git_ign_add()
 		(cd `dirname "$a"`; \ls -d `basename "$a"` -1  >> .gitignore; git add .gitignore )
 	done
 }
+
 cmd trap_err "traps command failures, print reuturn value and returns, better than set -o errexit"
 trap_err()
 {
-	trap 'echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO}" > /dev/stderr;return 2> /dev/null' ERR
+	trap 'echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO} ${FUNCNAME[*]}" > /dev/stderr;return $ret 2> /dev/null' ERR
 }
 
 ###############################################################################
@@ -148,8 +149,10 @@ trap_err()
 cmd system_status_short "shows short summary of system resources (RAM,CPU) usage"
 system_status_short()
 {
-	echo "Available RAM: "$((`mem_avail_kb`/1024))"M" \
-	       	$((100*`mem_avail_kb`/`head -1</proc/meminfo | sed "s/ \+/ /g" | cut -d' ' -f 2`))"%"
+	eval `sed "s/: \+/=/g;s/kB//;s/(/_/;s/)//" < /proc/meminfo`
+	mem_avail_percent=$((($MemFree+$Buffers+$Cached)*100/$MemTotal))
+
+	echo "Available RAM: "$((($MemFree+$Buffers+$Cached)/1024))"M $mem_avail_percent%"
 	paste <(mpstat|grep %usr|sed "s/ \+/\n/g") <(mpstat|grep all|sed "s/ \+/\n/g") | \grep -e idle -e iowait -e sys
 	ps-cpu
 	ps-mem
@@ -159,6 +162,7 @@ cmd system_status_long "shows long system status and statistics by running vario
 system_status_long()
 {
 	grep "" /etc/issue /etc/*release
+	getconf LONG_BIT
 	top -bn1 | head --lines 20
 	echo
 	free -m
@@ -318,11 +322,11 @@ ip_to_mac()
 cmd fs_usage "show biggest directories and optionally files on a filesystem, for example on root: fs_usage -a /"
 fs_usage()
 {
-	du --one-file-system "$@" | sort -n | tail -n $((LINES-2))
+	du --time --one-file-system "$@" | sort -n | tail -n $((LINES-2))
 	df "$@"
 }
 
-cmd PATH_add "adds argument to PATH, if required"
+cmd PATH_add "appends argument to PATH, if required"
 PATH_add()
 {
 	if [[ ":$PATH:" == *":$1:"* ]]
@@ -331,6 +335,12 @@ PATH_add()
 	else
 		export PATH="$PATH:$1"
 	fi
+}
+
+cmd PATH_show "prints PATH in readable format"
+PATH_show()
+{
+	echo $PATH | sed "s/:/\n/g"
 }
 
 cmd gcc_set "set specified [cross] compiler as default in environment"
@@ -356,14 +366,22 @@ gcc_set()
 	$CC -v 2>&1  | grep 'gcc version'
 }
 
+cmd staging_dir_fix "fix parameter libdir in *.la files in staging cross-compilation directory"
+staging_dir_fix()
+{
+	sed -i "s|^libdir='//\?lib'|libdir='`readlink --canonicalize "$1"`/lib'|" \
+		`grep --no-messages --recursive --files-with-matches --include *.la "libdir='//\?lib" "$1"`
+	grep -r --include *.la "libdir=" "$1"
+}
+
 cmd mem_drop_caches "drop chaches and free this memory. Practically not required"
 alias mem_drop_caches="sync; echo 3 | sudo tee /proc/sys/vm/drop_caches"
 
 cmd mem_avail_kb "Returns available for allocation RAM, which is sum of MemFree, Buffers and Cached memory"
 mem_avail_kb()
 {
-	# also free | grep cache | awk '/[0-9]/{ print $4" KB" }'
-	echo $(($(echo `sed -n '2p;3p;4p' <  /proc/meminfo | sed "s/ \+/ /g" | cut -d' ' -f 2 ` | sed "s/ /+/g") ))
+	# also free | grep "^-" | (read a b c d; echo $d)
+	echo $(($(echo `grep -e ^MemFree -e ^Buffers -e ^Cached /proc/meminfo | sed "s/ \+/ /g" | cut -d' ' -f 2 ` | sed "s/ /+/g") ))
 }
 
 cmd wget_as_me "Run wget with cookies from firefox to access authenticated data"
@@ -373,6 +391,9 @@ wget_as_me()
 		'select host, "TRUE", path, "FALSE", expiry, name, value from moz_cookies' \
 		> ~/.mozilla/cookies.txt
 	wget -q --load-cookies ~/.mozilla/cookies.txt "$@"
+	ret=$?
+	echo ret=$ret
+	return $ret
 }
 
 cmd calc "calculate with bc specified floating point expression"
