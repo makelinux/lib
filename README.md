@@ -51,6 +51,12 @@ List of available commands:
 * PATH_remove - removes argument from PATH
 * PATH_append - prints PATH in readable format
 * gcc_set - set specified [cross] compiler as default in environment
+* get_source - download and unpack an open source tarball
+* gnu_build - universal complete build and install of gnu package
+* alternative_config_build - build of package, alternatively to gnu_build
+* build_env - configure staging build environment
+* glib_arm_build - demonstration of arm compilation of glib from the scratch
+* staging_dir_fix - fix parameter libdir in *.la files in staging cross-compilation directory
 * mem_drop_caches - drop chaches and free this memory. Practically not required
 * mem_avail_kb - Returns available for allocation RAM, which is sum of MemFree, Buffers and Cached memory
 * wget_as_me - Run wget with cookies from firefox to access authenticated data

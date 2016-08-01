@@ -377,6 +377,92 @@ gcc_set()
 	$CC -v 2>&1  | grep 'gcc version'
 }
 
+cmd get_source "download and unpack an open source tarball"
+get_source()
+{
+	fn=$(basename $1)
+	n=${fn%%.tar.*}
+	! test -f ~/Downloads/"$fn" && (expr match "$1" "^http" || expr match "$1" "^ftp" ) > /dev/null && wget -P ~/Downloads/ $1
+	[ -e "$n" ] || aunpack -q ~/Downloads/"$fn"
+}
+
+cmd gnu_build "universal complete build and install of gnu package"
+gnu_build()
+{
+	get_source $1
+	shift
+	pushd $n
+	if [ -d debian  ]; then
+		dpkg-buildpackage -rfakeroot -uc -b
+		return
+	fi
+	configure_opt="$configure_opt_init -q"
+	if [ -n "$DESTDIR" ]; then
+		configure_opt+=" --prefix=/ --includedir=/include "
+	fi
+	configure_opt+=" CPPFLAGS=${CPPFLAGS}"
+	configure_opt+=" LDFLAGS='${LDFLAGS}'"
+	if [ -n "${CROSS_COMPILE}" ]; then
+		configure_opt+=" --host=${CROSS_COMPILE%-}"
+	fi
+	configure_opt+=" --with-sysroot=${staging}"
+	configure_opt+=" $* "
+	mkdir -p $($CC -dumpmachine)-build
+	pushd $_
+	[ -e Makefile ] || ( echo "Configuring $configure_opt" && eval ../configure $configure_opt )
+	make -j$NUMCPUS --load-average=$NUMCPUS -ws \
+		&& make install
+	ret=$?
+	popd
+	popd
+	return $ret
+}
+
+cmd alternative_config_build "build of package, alternatively to gnu_build"
+alternative_config_build()
+{
+	get_source $1
+	shift
+	mkdir -p $n/$($CC -dumpmachine)-build~ # '~' to skip by lndir
+	pushd $_
+	lndir -silent ..
+	./configure "$@"
+	make -j$NUMCPUS --load-average=$NUMCPUS -ws &&
+		make install
+	ret=$?
+	popd
+	return $ret
+}
+
+cmd build_env "configure staging build environment"
+build_env()
+{
+	staging=$(readlink --canonicalize $1)
+	PKG_CONFIG_DIR= #https://autotools.io/pkgconfig/cross-compiling.html
+	PKG_CONFIG_SYSROOT_DIR=$staging
+	#export PKG_CONFIG_PATH=$staging/lib/pkgconfig
+	PKG_CONFIG_LIBDIR=$PKG_CONFIG_SYSROOT_DIR/lib/pkgconfig
+	DESTDIR=$staging # used by make install
+	CPPFLAGS=-I${staging}/include
+	LDFLAGS=-L${staging}/lib
+	LDFLAGS+=' '-Wl,-rpath-link=${staging}/lib
+	export staging PKG_CONFIG_DIR PKG_CONFIG_SYSROOT_DIR DESTDIR CPPFLAGS LDFLAGS
+}
+
+cmd glib_arm_build "demonstration of arm compilation of glib from the scratch"
+glib_arm_build()
+{
+	gcc_set /usr/bin/arm-linux-gnueabi-gcc
+	build_env staging-$($CC -dumpmachine)
+	alternative_config_build http://zlib.net/zlib-1.2.8.tar.gz --prefix=/
+	gnu_build ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz
+	cp -a ${staging}/lib/libffi-*/include ${staging}/
+	export glib_cv_stack_grows=no glib_cv_uscore=no ac_cv_func_posix_getpwuid_r=yes ac_cv_func_posix_getgrgid_r=yes
+	gnu_build http://ftp.gnome.org/pub/gnome/sources/glib/2.48/glib-2.48.1.tar.xz --with-pcre=internal
+	file -L staging-$($CC -dumpmachine)/lib/libglib-2.0.so
+	return $?
+}
+
 cmd staging_dir_fix "fix parameter libdir in *.la files in staging cross-compilation directory"
 staging_dir_fix()
 {
