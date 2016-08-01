@@ -401,7 +401,7 @@ gnu_build()
 	if [ -n "$DESTDIR" ]; then
 		configure_opt+=" --prefix=/ --includedir=/include "
 	fi
-	configure_opt+=" CPPFLAGS=${CPPFLAGS}"
+	configure_opt+=" CPPFLAGS='${CPPFLAGS}'"
 	configure_opt+=" LDFLAGS='${LDFLAGS}'"
 	if [ -n "${CROSS_COMPILE}" ]; then
 		configure_opt+=" --host=${CROSS_COMPILE%-}"
