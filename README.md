@@ -48,7 +48,10 @@ List of available commands:
 * mac_to_ip - looks in LAN IP for MAC
 * ip_to_mac - show MAC address for specified IP in LAN
 * fs_usage - show biggest directories and optionally files on a filesystem, for example on root: fs_usage -a /
-* PATH_add - adds argument to PATH, if required
+* PATH_append - appends argument to PATH, if required
+* PATH_insert - inserts argument to head of PATH, if required
+* PATH_remove - removes argument from PATH
+* PATH_append - prints PATH in readable format
 * gcc_set - set specified [cross] compiler as default in environment
 * mem_drop_caches - drop chaches and free this memory. Practically not required
 * mem_avail_kb - Returns available for allocation RAM, which is sum of MemFree, Buffers and Cached memory

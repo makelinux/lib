@@ -326,8 +326,8 @@ fs_usage()
 	df "$@"
 }
 
-cmd PATH_add "appends argument to PATH, if required"
-PATH_add()
+cmd PATH_append "appends argument to PATH, if required"
+PATH_append()
 {
 	if [[ ":$PATH:" == *":$1:"* ]]
 	then
@@ -337,7 +337,24 @@ PATH_add()
 	fi
 }
 
-cmd PATH_show "prints PATH in readable format"
+cmd PATH_insert "inserts argument to head of PATH, if required"
+PATH_insert()
+{
+	if [[ ":$PATH:" == *":$1:"* ]]
+	then
+		echo "$1 is already in path"
+	else
+		export PATH="$1:$PATH"
+	fi
+}
+
+cmd PATH_remove "removes argument from PATH"
+PATH_remove()
+{
+	PATH=$(echo ":$PATH:"| sed "s|:$1:|:|" | sed "s|::||g;s|^:||;s|:$||")
+}
+
+cmd PATH_append "prints PATH in readable format"
 PATH_show()
 {
 	echo $PATH | sed "s/:/\n/g"
@@ -347,10 +364,10 @@ cmd gcc_set "set specified [cross] compiler as default in environment"
 gcc_set()
 {
 	#export PATH=/usr/sbin:/usr/bin:/sbin:/bin:
-	gcc=`readlink --canonicalize "$1"`
-	path=`dirname "$gcc"`
-	PATH_add "$path"
-	file=`basename "$gcc"`
+	gcc=$(which "$1")
+	path=$(dirname "$gcc")
+	PATH_append "$path"
+	file=$(basename "$gcc")
 	export CROSS_COMPILE=${file%-*}- # delete shortest from the end
 	export CC=${CROSS_COMPILE}gcc
 	export AR=${CROSS_COMPILE}ar
