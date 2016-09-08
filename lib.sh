@@ -55,10 +55,10 @@ cmd ps-tree "lists process tree via ps, see also pstree -p"
 alias ps-tree="ps -ejH"
 
 cmd ps-cpu "lists most CPU consuming processes"
-alias ps-cpu="ps -e -o pcpu,pid,comm --sort -%cpu  | head -n 5"
+alias ps-cpu="ps -e -o pcpu,pid,comm --sort -%cpu | head -n 5"
 
 cmd ps-mem "lists most memory consuming processes"
-alias ps-mem="ps -e  -o pmem,vsz,rss,pid,comm --sort -%mem  | head -n 5"
+alias ps-mem="ps -e -o pmem,vsz,rss,pid,comm --sort -%mem | head -n 5"
 
 cmd ps-wchan "shows what processes are waiting for, used in debugging blocked processes"
 alias ps-wchan="ps -e -o pid,comm,wchan"
@@ -126,9 +126,9 @@ git_fixup()
 cmd git_ign_add "add files' names with path to appropriate .gitignore list"
 git_ign_add()
 {
-	for a in $*;  do
+	for a in $*; do
 		echo "$a"
-		(cd `dirname "$a"`; \ls -d `basename "$a"` -1  >> .gitignore; git add .gitignore )
+		(cd `dirname "$a"`; \ls -d `basename "$a"` -1 >> .gitignore; git add .gitignore )
 	done
 }
 
@@ -283,7 +283,7 @@ name_get()
 	echo "${a%.*}"
 }
 
-cmd postfix_extract "return filename postfix:  path/name[-_]postfix.ext -> postfix"
+cmd postfix_extract "return filename postfix: path/name[-_]postfix.ext -> postfix"
 postfix_extract()
 {
 	a=${1%.*}
@@ -375,7 +375,7 @@ gcc_set()
 	mach=`$CC -dumpmachine`
 	export ARCH=${mach%%-*}
 	PS1='$ARCH \w \$ '
-	$CC -v 2>&1  | grep 'gcc version'
+	$CC -v 2>&1 | grep 'gcc version'
 }
 
 cmd get_source "download and unpack an open source tarball"
@@ -393,7 +393,7 @@ gnu_build()
 	get_source $1
 	shift
 	pushd $n
-	if [ -d debian  ]; then
+	if [ -d debian ]; then
 		dpkg-buildpackage -rfakeroot -uc -b
 		return
 	fi
@@ -532,7 +532,7 @@ lib_sh_demo()
 	v ext_strip aaa.bbb
 	v name_get path/name.ext
 	v postfix_extract path/name_postfix.ext
-	v for_each echo  aaa bbb ccc
+	v for_each echo aaa bbb ccc
 	mkdir -p dup/sub
 	echo 1 > dup/1
 	cp dup/1 dup/1.1
