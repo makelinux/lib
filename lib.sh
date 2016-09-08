@@ -365,11 +365,8 @@ cmd gcc_set "set specified [cross] compiler as default in environment"
 gcc_set()
 {
 	#export PATH=/usr/sbin:/usr/bin:/sbin:/bin:
-	gcc=$(which "$1")
-	path=$(dirname "$gcc")
-	PATH_append "$path"
-	file=$(basename "$gcc")
-	export CROSS_COMPILE=${file%-*}- # delete shortest from the end
+	PATH_append $(dirname $(which "$1"))
+	export CROSS_COMPILE=$(expr match "$(basename $1)" '\(.*-\)')
 	export CC=${CROSS_COMPILE}gcc
 	export AR=${CROSS_COMPILE}ar
 	export LD=${CROSS_COMPILE}ld
