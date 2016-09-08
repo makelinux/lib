@@ -60,6 +60,12 @@ alias ps-cpu="ps -e -o pcpu,pid,comm --sort -%cpu | head -n 5"
 cmd ps-mem "lists most memory consuming processes"
 alias ps-mem="ps -e -o pmem,vsz,rss,pid,comm --sort -%mem | head -n 5"
 
+cmd default-eth "provides default Ethernet interface"
+alias default-eth='ip route | awk "/default/ { print \$5 }"'
+
+cmd external-ip "Provides external IP"
+alias external-ip="dig +short myip.opendns.com @resolver1.opendns.com"
+
 cmd ps-wchan "shows what processes are waiting for, used in debugging blocked processes"
 alias ps-wchan="ps -e -o pid,comm,wchan"
 
