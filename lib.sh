@@ -381,6 +381,14 @@ gcc_set()
 	$CC -v 2>&1 | grep 'gcc version'
 }
 
+cmd get_source "replace substring arg1 to substring arg2 in directory arg3"
+replace()
+{
+	grep "$1" "$3" \
+		-rl --exclude .orig --exclude .git --binary-files=without-match --exclude-dir=.svn --exclude-dir=.git -P \
+		| xargs sed -i "s|$1|$2|g"
+}
+
 cmd get_source "download and unpack an open source tarball"
 get_source()
 {
