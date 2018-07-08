@@ -559,12 +559,21 @@ v()
 	eval "$@"
 }
 
+# used in lib_sh_demo only
+eq()
+{
+	a="$1"
+	echo -n "$a "
+	shift
+	if [ "$a" == $(eval "$@") ]; then echo -n '= '; else echo -n '!= '; fi
+	echo "$@"
+}
+
 cmd lib_sh_demo "run lib.sh functions for demonstration and testing"
 lib_sh_demo()
 {
-	v ext_get aaa.bbb
-	v ext_strip aaa.bbb
-	v name_get path/name.ext
+	eq '4.tar.gz' str ext '1/2/3.4.tar.gz'
+	eq '3' str base '1/2/3.4.tar.gz'
 	v postfix_extract path/name_postfix.ext
 	v for_each echo aaa bbb ccc
 	mkdir -p dup/sub
@@ -573,12 +582,13 @@ lib_sh_demo()
 	cp dup/1 dup/sub/
 	echo 2 > dup/2
 
-	v duplicate dup
+	v duplicates dup
 	v mem_avail_kb
 	check true
 	check false
-	v 'wget_as_me "http://mail.google.com/mail?nocheckbrowser&ui=html" -O- \
-		| lynx -stdin -dump -width=$COLUMNS | grep ^Inbox -A 10'
+	#not supported
+	#v 'wget_as_me "http://mail.google.com/mail?nocheckbrowser&ui=html" -O- \
+	#	| lynx -stdin -dump -width=$COLUMNS | grep ^Inbox -A 10'
 }
 
 if [ -n "$*" ]; then
