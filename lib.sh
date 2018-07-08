@@ -27,7 +27,7 @@ export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
 
 cmd()
 {
-	usage="$usage $1 - $2\n"
+	usage+=" $1 - $2\n"
 }
 
 cmd lib_help "shows help for Lib.sh"
@@ -39,7 +39,7 @@ lib_help()
 ###############################################################################
 #	Short useful definitions and aliases
 
-export GREP_OPTIONS="--devices=skip --color=auto " # avoid hanging grep on devices
+GREP_OPTIONS="--devices=skip --color=auto " # avoid hanging grep on devices
 export GREP_COLORS='ms=01;38:mc=01;31:sl=02;38:cx=:fn=32:ln=32:bn=32:se=36' # print matched text in bold
 export HISTIGNORE="&:ls:[bf]g:exit"
 
@@ -150,10 +150,7 @@ trap_err()
 cmd system_status_short "shows short summary of system resources (RAM,CPU) usage"
 system_status_short()
 {
-	eval `sed "s/: \+/=/g;s/kB//;s/(/_/;s/)//" < /proc/meminfo`
-	mem_avail_percent=$((($MemFree+$Buffers+$Cached)*100/$MemTotal))
-
-	echo "Available RAM: "$((($MemFree+$Buffers+$Cached)/1024))"M $mem_avail_percent%"
+	grep -e MemTotal: -e MemAvailable: /proc/meminfo
 	paste <(mpstat|grep %usr|sed "s/ \+/\n/g") <(mpstat|grep all|sed "s/ \+/\n/g") | \grep -e idle -e iowait -e sys
 	ps-cpu
 	ps-mem
@@ -496,12 +493,12 @@ mem_avail_kb()
 cmd wget_as_me "Run wget with cookies from firefox to access authenticated data"
 wget_as_me()
 {
-	sqlite3 -separator "$tab" $HOME/.mozilla/firefox/*.default*/cookies.sqlite \
+	sqlite3 -separator "$tab" $(ls -1t $HOME/.mozilla/firefox/*.default*/cookies.sqlite | head -1) \
 		'select host, "TRUE", path, "FALSE", expiry, name, value from moz_cookies' \
 		> ~/.mozilla/cookies.txt
 	wget -q --load-cookies ~/.mozilla/cookies.txt "$@"
 	ret=$?
-	echo ret=$ret
+	#( 1>&2 echo echo ret=$ret )
 	return $ret
 }
 
