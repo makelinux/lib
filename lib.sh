@@ -138,6 +138,13 @@ git_ign_add()
 	done
 }
 
+cmd log "safely prints messages to stderr"
+log()
+{
+	# Note: echo "$@" > /dev/stderr - resets stderr
+	( 1>&2 echo "$@" )
+}
+
 cmd trap_err "traps command failures, print reuturn value and returns, better than set -o errexit"
 trap_err()
 {
@@ -229,7 +236,7 @@ retry()
 {
 	# see also "watch"
 	while ( ! "$@" ) do
-	echo retry
+	log retry
 	sleep 1
 	done
 }
