@@ -25,15 +25,40 @@ MYSHELL=`/bin/ps -p $$ -o command=| sed "s:$0::;s:busybox ::"`
 export tab=$'\t'
 export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
 
+unset usage
+declare -A usage
+
 cmd()
 {
-	usage+=" $1 - $2\n"
+	usage[$1]="$2"
 }
 
 cmd lib_help "shows help for Lib.sh"
 lib_help()
 {
-	echo -e "$usage"
+	echo -e "List of available commands:\n"
+
+	for i in "${!usage[@]}"
+	do
+		echo "$i - ${usage[$i]}"
+	done
+}
+
+lib_docs()
+{
+	for i in "${!usage[@]}"
+	do
+		(
+		echo -e "$i - ${usage[$i]}\n====\n\n"
+		echo -e "\`\`\`"
+		if [ $(type -t $i) == alias ]; then
+			a=$(type $i); echo alias ${a/ is aliased to \`/=\'}
+		else
+			type "$i" | (read; cat)
+		fi
+		echo "\`\`\`"
+		) > "$i.md"
+	done
 }
 
 ###############################################################################
@@ -42,8 +67,6 @@ lib_help()
 GREP_OPTIONS="--devices=skip --color=auto " # avoid hanging grep on devices
 export GREP_COLORS='ms=01;38:mc=01;31:sl=02;38:cx=:fn=32:ln=32:bn=32:se=36' # print matched text in bold
 export HISTIGNORE="&:ls:[bf]g:exit"
-
-usage="$usage\nList of available commands:\n"
 
 cmd ps-all "lists all processes"
 alias ps-all='ps -AF'
