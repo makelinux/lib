@@ -460,24 +460,34 @@ gnu_build()
 		dpkg-buildpackage -rfakeroot -uc -b
 		return
 	fi
-	configure_opt="$configure_opt_init -q"
-	if [ -n "$DESTDIR" ]; then
-		configure_opt+=" --prefix=/ --includedir=/include "
+	test -e configure || autoreconf --install
+	if [ -e configure ]; then
+		configure_opt="$configure_opt_init -q"
+		if [ -n "$DESTDIR" ]; then
+			configure_opt+=" --prefix=/ --includedir=/include "
+		fi
+		configure_opt+=" CPPFLAGS='${CPPFLAGS}'"
+		configure_opt+=" LDFLAGS='${LDFLAGS}'"
+		if [ -n "${CROSS_COMPILE}" ]; then
+			configure_opt+=" --host=${CROSS_COMPILE%-}"
+		fi
+		configure_opt+=" --with-sysroot=${staging}"
+		configure_opt+=" $* "
+		mkdir -p $($CC -dumpmachine)-build
+		pushd $_
+		test -e Makefile || ( echo "Configuring $configure_opt" && eval ../configure $configure_opt )
+		make -j$NUMCPUS --load-average=$NUMCPUS -ws \
+			&& make -k install || sudo -H make -k install
+		ret=$?
+		popd
 	fi
-	configure_opt+=" CPPFLAGS='${CPPFLAGS}'"
-	configure_opt+=" LDFLAGS='${LDFLAGS}'"
-	if [ -n "${CROSS_COMPILE}" ]; then
-		configure_opt+=" --host=${CROSS_COMPILE%-}"
+	ls
+	if [ -e Makefile.PL ]; then
+		perl Makefile.PL
+		make
+		sudo make -k install
+		ret=$?
 	fi
-	configure_opt+=" --with-sysroot=${staging}"
-	configure_opt+=" $* "
-	mkdir -p $($CC -dumpmachine)-build
-	pushd $_
-	[ -e Makefile ] || ( echo "Configuring $configure_opt" && eval ../configure $configure_opt )
-	make -j$NUMCPUS --load-average=$NUMCPUS -ws \
-		&& make install
-	ret=$?
-	popd
 	popd
 	return $ret
 }
