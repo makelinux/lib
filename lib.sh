@@ -438,11 +438,16 @@ replace()
 cmd get_source "download and unpack an open source tarball"
 get_source()
 {
-	fn=$(basename $1)
-	n=${fn%%.tar.*}
-	! test -f ~/Downloads/"$fn" && (expr match "$1" "^http" || expr match "$1" "^ftp" ) > /dev/null && wget -P ~/Downloads/ $1
-	[ -e "$n" ] || aunpack -q ~/Downloads/"$fn"
-}
+	case $1 in
+		(git* | *.git) git clone $1 ;;
+		(svn*) git checkout $1 ;;
+		(*)
+			fn=$(basename $1)
+			n=${fn%%.tar.*}
+			! test -f ~/Downloads/"$fn" && (expr match "$1" "^http" || expr match "$1" "^ftp" ) > /dev/null && wget -P ~/Downloads/ $1
+			[ -e "$n" ] || aunpack -q ~/Downloads/"$fn"
+		esac
+	}
 
 cmd gnu_build "universal complete build and install of gnu package"
 gnu_build()
