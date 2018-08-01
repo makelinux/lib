@@ -293,7 +293,7 @@ for_each()
 	op=$1
 	shift
 	for arg in "$@"; do
-	eval "$op" \"$arg\"
+		eval "$op" \"$arg\"
 	done
 }
 
@@ -348,7 +348,7 @@ unzip_dir()
 	unzip "$@" -d `name_get "$1"`
 }
 
-cmd mac_to_ip "looks in LAN IP for MAC"
+cmd mac_to_ip "looks for LAN IP for MAC"
 mac_to_ip()
 {
 	ping -q -c 4 -b 255.255.255.255 &> /dev/null
@@ -447,6 +447,7 @@ get_source()
 cmd gnu_build "universal complete build and install of gnu package"
 gnu_build()
 {
+	[ "$CC" ] || CC=gcc
 	get_source $1
 	shift
 	pushd $n
@@ -479,12 +480,13 @@ gnu_build()
 cmd alternative_config_build "build of package, alternatively to gnu_build"
 alternative_config_build()
 {
+	[ "$CC" ] || CC=gcc
 	get_source $1
 	shift
 	mkdir -p $n/$($CC -dumpmachine)-build~ # '~' to skip by lndir
 	pushd $_
 	lndir -silent ..
-	./configure "$@"
+	./configure -q "$@"
 	make -j$NUMCPUS --load-average=$NUMCPUS -ws &&
 		make install
 	ret=$?
@@ -531,13 +533,6 @@ staging_dir_fix()
 
 cmd mem_drop_caches "drop chaches and free this memory. Practically not required"
 alias mem_drop_caches="sync; echo 3 | sudo tee /proc/sys/vm/drop_caches"
-
-cmd mem_avail_kb "Returns available for allocation RAM, which is sum of MemFree, Buffers and Cached memory"
-mem_avail_kb()
-{
-	# also free | grep "^-" | (read a b c d; echo $d)
-	echo $(($(echo `grep -e ^MemFree -e ^Buffers -e ^Cached /proc/meminfo | sed "s/ \+/ /g" | cut -d' ' -f 2 ` | sed "s/ /+/g") ))
-}
 
 cmd wget_as_me "Run wget with cookies from firefox to access authenticated data"
 wget_as_me()
@@ -606,7 +601,6 @@ lib_sh_demo()
 	echo 2 > dup/2
 
 	v duplicates dup
-	v mem_avail_kb
 	check true
 	check false
 	#not supported
