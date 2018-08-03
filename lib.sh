@@ -269,13 +269,13 @@ cmd duplicates 'finds duplicate files. To follow symbolic links run duplicate -L
 duplicates()
 {
 	# Features:
-	# Fast because checks sizes first
+	# * Fast - because it checks sizes first
 	# and filters same linked files by checking inode (%i)
-	# - Sorts files by size to help you to delete biggest files first
-
+	# * Sorts files by size to help you to delete biggest files first
+	#
 	# Troubleshooting:
 	# on out of memory define TMPDIR
-
+	#
 	find "$@" -type f -not -regex '.*/\.svn/.*' -printf "%10i\t%10s\t%p\n" \
 		| sort -n \
 		| uniq --unique -w10 \
