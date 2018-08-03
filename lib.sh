@@ -310,31 +310,13 @@ str()
 		(subst) echo "${2/$3/$4}";;
 		(subst_all) echo "${2//$3/$4}";;
 		(ext) echo "${2#*.}";;
-		(rtrim_ext) echo "${2%%.*}";;
-		(base)
+		(rtrim_ext) echo "${2%%.*}";; # path without extension
+		(base) # just filename without path and extension
 			local a=${2##*/}
 			echo "${a%%.*}"
 			;;
 	esac
-}
-
-cmd ext_get "extracts extension from specified filename"
-ext_get()
-{
-	echo "${1##*.}"
-}
-
-cmd ext_strip "returns filename without extension"
-ext_strip()
-{
-	echo "${1%.*}"
-}
-
-cmd name_get "returns just filename without path and extension"
-name_get()
-{
-	a=${1##*/}
-	echo "${a%.*}"
+	# More: https://www.tldp.org/LDP/abs/html/string-manipulation.html
 }
 
 cmd postfix_extract "return filename postfix: path/name[-_]postfix.ext -> postfix"
@@ -347,7 +329,7 @@ postfix_extract()
 cmd unzip_dir "handy unzip to directory with name of zip-file"
 unzip_dir()
 {
-	unzip "$@" -d `name_get "$1"`
+	unzip "$@" -d `str base "$1"`
 }
 
 cmd mac_to_ip "looks for LAN IP for MAC"
