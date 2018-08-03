@@ -19,5 +19,6 @@ str()
 			echo "${a%%.*}"
 			;;
 	esac
+	# More: https://www.tldp.org/LDP/abs/html/string-manipulation.html
 }
 ```
