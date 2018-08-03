@@ -107,7 +107,7 @@ alias hist='history $((LINES-2))'
 cmd deb-list "list content of specified deb file"
 alias deb-list="dpkg-deb --contents"
 
-cmd quotation-highlight "higlight text in quotation marks (\"quotation\")"
+cmd quotation-highlight "highlight text in quotation marks (\"quotation\")"
 ansi_rev=$'\e[7m'
 ansi_norm=$'\e[0m'
 alias quotation-highlight=' sed "
@@ -148,7 +148,7 @@ git-prompt()
 	PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
 }
 
-cmd git-fixup "interactive fixup of specified number of last git commits"
+cmd git-fixup "interactive fix up of specified number of last git commits"
 git-fixup()
 {
 	git rebase -i HEAD~$1 .
@@ -170,7 +170,7 @@ log()
 	( 1>&2 echo "$@" )
 }
 
-cmd trap-err "traps command failures, print reuturn value and returns, better than set -o errexit"
+cmd trap-err "traps command failures, print return value and returns, better than set -o errexit"
 trap-err()
 {
 	trap 'echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO} ${FUNCNAME[*]}" > /dev/stderr;return $ret 2> /dev/null' ERR
@@ -530,7 +530,7 @@ staging-dir-fix()
 	grep -r --include *.la "libdir=" "$1"
 }
 
-cmd mem-drop-caches "drop chaches and free this memory. Practically not required"
+cmd mem-drop-caches "drop caches and free this memory. Practically not required"
 alias mem-drop-caches="sync; echo 3 | sudo tee /proc/sys/vm/drop-caches"
 
 cmd wget-as-me "Run wget with cookies from firefox to access authenticated data"
@@ -565,7 +565,7 @@ md5sum-make()
 cmd check "runs verbosely specified command and prints return status"
 check()
 {
-	echo -n "Runnung: $@ : "
+	echo -n "Running: $@ : "
 	eval "$@" && echo -e "$? \033[2;32mOK \033[0;39m" || echo -e "$? \033[2;31mFail \033[0;39m"
 }
 
