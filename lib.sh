@@ -106,9 +106,9 @@ alias hist='history $((LINES-2))'
 cmd deb-list "list content of specified deb file"
 alias deb-list="dpkg-deb --contents"
 
+cmd quotation_highlight "higlight text in quotation marks (\"quotation\")"
 ansi_rev=$'\e[7m'
 ansi_norm=$'\e[0m'
-cmd quotation_highlight "higlight text in quotation marks (\"quotation\")"
 alias quotation_highlight=' sed "
 	s|\\\\\\\\|:dbs:|g;
 	s|\\\\\"|:bsq:|g;
@@ -117,8 +117,9 @@ alias quotation_highlight=' sed "
 	s|:quotation:|\\\\\"|g;
 	s|:bsq:|\\\\\\\"|g;
 	s|:dbs:|\\\\\\\\|g"'
-cmd readline-bindings "shows current readline bindings, used as shell keyboard shortcuts, in more readable format, see also man readline"
-alias readline-bindings='(bind -P | grep -v "is not bound" | nl |
+
+cmd keyboard-shortcuts "bash keyboard shortcuts. See also man readline."
+alias keyboard-shortcuts='(bind -P | grep -v "is not bound" | nl |
 	sed "
 		s| can be found on|:|;
 		s|.$||;
