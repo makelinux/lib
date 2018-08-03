@@ -44,20 +44,21 @@ lib_help()
 	done
 }
 
-lib_docs()
+lib_snippets()
 {
 	for i in "${!usage[@]}"
 	do
 		(
 		echo -e "$i - ${usage[$i]}\n====\n\n"
-		echo -e "\`\`\`"
+		echo -e "\`\`\` bash"
 		if [ $(type -t $i) == alias ]; then
 			a=$(type $i); echo alias ${a/ is aliased to \`/=\'}
 		else
-			type "$i" | (read; cat)
+			#type "$i" | (read; cat)
+			awk "/cmd $i/{f=1;next}; { if (f && /$^/)exit}; f" lib.sh
 		fi
 		echo "\`\`\`"
-		) > "$i.md"
+		) > "snippets/$i.md"
 	done
 }
 
