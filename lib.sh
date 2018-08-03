@@ -33,8 +33,8 @@ cmd()
 	usage[$1]="$2"
 }
 
-cmd lib_help "shows help for Lib.sh"
-lib_help()
+cmd lib-help "shows help for Lib.sh"
+lib-help()
 {
 	echo -e "List of available commands:\n"
 
@@ -44,7 +44,7 @@ lib_help()
 	done
 }
 
-lib_snippets()
+lib-snippets()
 {
 	for i in "${!usage[@]}"
 	do
@@ -93,10 +93,10 @@ alias external-ip="dig +short myip.opendns.com @resolver1.opendns.com"
 cmd ps-wchan "shows what processes are waiting for, used in debugging blocked processes"
 alias ps-wchan="ps -e -o pid,comm,wchan"
 
-cmd ls_size "list files with sizes in bytes, shorter than ls -l"
+cmd ls-size "list files with sizes in bytes, shorter than ls -l"
 #alias ls-size='ls -s --block-size=1 -1'
 #alias ls-size='stat -c "%s$tab%n"'
-ls_size() { stat -c "%s$tab%n" `\ls "$@"`; }
+ls-size() { stat -c "%s$tab%n" `\ls "$@"`; }
 
 cmd mplayer-rotate-right "play video rotated right, used to play vertically captured videos"
 alias mplayer-rotate-right="mplayer -vf rotate=1"
@@ -107,10 +107,10 @@ alias hist='history $((LINES-2))'
 cmd deb-list "list content of specified deb file"
 alias deb-list="dpkg-deb --contents"
 
-cmd quotation_highlight "higlight text in quotation marks (\"quotation\")"
+cmd quotation-highlight "higlight text in quotation marks (\"quotation\")"
 ansi_rev=$'\e[7m'
 ansi_norm=$'\e[0m'
-alias quotation_highlight=' sed "
+alias quotation-highlight=' sed "
 	s|\\\\\\\\|:dbs:|g;
 	s|\\\\\"|:bsq:|g;
 	s|\\\\\"|:quotation:|g;
@@ -129,7 +129,7 @@ alias keyboard-shortcuts='(bind -P | grep -v "is not bound" | nl |
 		s|\\\e|+|g;" \
 		| pr --omit-header --expand-tabs --columns=2 -w $COLUMNS \
 		| expand; \
-		echo \"^\" = Ctrl, \"+\" = Escape) | quotation_highlight '
+		echo \"^\" = Ctrl, \"+\" = Escape) | quotation-highlight '
 
 cmd tcpdump-text "tcpdump of payload in text"
 alias tcpdump-text="sudo tcpdump -l -s 0 -A '(((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0) and'"
@@ -142,20 +142,20 @@ alias make-debug="remake --debug=bv SHELL='/bin/bash -vx' "
 cmd git-diff "handy git diff"
 alias git-diff='git diff --relative --no-prefix -w'
 
-cmd git_prompt "sets shell prompt to show git branch"
-git_prompt()
+cmd git-prompt "sets shell prompt to show git branch"
+git-prompt()
 {
 	PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
 }
 
-cmd git_fixup "interactive fixup of specified number of last git commits"
-git_fixup()
+cmd git-fixup "interactive fixup of specified number of last git commits"
+git-fixup()
 {
 	git rebase -i HEAD~$1 .
 }
 
-cmd git_ign_add "add files' names with path to appropriate .gitignore list"
-git_ign_add()
+cmd git-ign-add "add files' names with path to appropriate .gitignore list"
+git-ign-add()
 {
 	for a in $*; do
 		echo "$a"
@@ -170,8 +170,8 @@ log()
 	( 1>&2 echo "$@" )
 }
 
-cmd trap_err "traps command failures, print reuturn value and returns, better than set -o errexit"
-trap_err()
+cmd trap-err "traps command failures, print reuturn value and returns, better than set -o errexit"
+trap-err()
 {
 	trap 'echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO} ${FUNCNAME[*]}" > /dev/stderr;return $ret 2> /dev/null' ERR
 }
@@ -179,8 +179,8 @@ trap_err()
 ###############################################################################
 #	Shell functions
 
-cmd system_status_short "shows short summary of system resources (RAM,CPU) usage"
-system_status_short()
+cmd system-status-short "shows short summary of system resources (RAM,CPU) usage"
+system-status-short()
 {
 	grep -e MemTotal: -e MemAvailable: /proc/meminfo
 	paste <(mpstat|grep %usr|sed "s/ \+/\n/g") <(mpstat|grep all|sed "s/ \+/\n/g") | \grep -e idle -e iowait -e sys
@@ -188,8 +188,8 @@ system_status_short()
 	ps-mem
 }
 
-cmd system_status_long "shows long system status and statistics by running various system utilities"
-system_status_long()
+cmd system-status-long "shows long system status and statistics by running various system utilities"
+system-status-long()
 {
 	grep "" /etc/issue /etc/*release
 	getconf LONG_BIT
@@ -217,7 +217,7 @@ system_status_long()
 }
 
 cmd shell_type "tries to identify type of current shell"
-shell_type()
+shell-type()
 {
 	# adopted from http://stackoverflow.com/questions/5166657/how-do-i-tell-what-type-my-shell-is
 	# see also http://www.in-ulm.de/~mascheck/various/whatshell/whatshell.sh.html
@@ -235,21 +235,21 @@ shell_type()
 	fi
 }
 
-cmd ps_of "specified process info"
-ps_of()
+cmd ps-of "specified process info"
+ps-of()
 {
 	# ps u -C "$1"
 	ps u `pidof "$@"`
 }
 
-cmd proc_mem_usage "returns percentage memory usage by specified process"
-proc_mem_usage()
+cmd proc-mem-usage "returns percentage memory usage by specified process"
+proc-mem-usage()
 {
 	ps h -o pmem -C "$1"
 }
 
-cmd dir_diff "compare listings of two specified directories"
-dir_diff()
+cmd dir-diff "compare listings of two specified directories"
+dir-diff()
 {
 	find "$1" -type f -printf "%P\n" | sort > "$1/list.tmp"
 	find "$2" -type f -printf "%P\n" | sort > "$2/list.tmp"
@@ -289,8 +289,8 @@ duplicates()
 		| cut -d ' ' -f 3-
 }
 
-cmd for_each "applies an operation to set of arguments one by one"
-for_each()
+cmd for-each "applies an operation to set of arguments one by one"
+for-each()
 {
 	op=$1
 	shift
@@ -299,18 +299,18 @@ for_each()
 	done
 }
 
-cmd str "readable string manipulations: ltrim, ltrim_max, rtrim, rtrim_max, subst, subst_all"
+cmd str "readable string manipulations: ltrim, ltrim-max, rtrim, rtrim-max, subst, subst-all"
 str()
 {
 	case $1 in
 		(ltrim) echo "${2#$3}" ;;
-		(ltrim_max) echo "${2##$3}";;
+		(ltrim-max) echo "${2##$3}";;
 		(rtrim) echo "${2%$3}";;
-		(rtrim_max) echo "${2%%$3}";;
+		(rtrim-max) echo "${2%%$3}";;
 		(subst) echo "${2/$3/$4}";;
-		(subst_all) echo "${2//$3/$4}";;
+		(subst-all) echo "${2//$3/$4}";;
 		(ext) echo "${2#*.}";;
-		(rtrim_ext) echo "${2%%.*}";; # path without extension
+		(rtrim-ext) echo "${2%%.*}";; # path without extension
 		(base) # just filename without path and extension
 			local a=${2##*/}
 			echo "${a%%.*}"
@@ -319,28 +319,28 @@ str()
 	# More: https://www.tldp.org/LDP/abs/html/string-manipulation.html
 }
 
-cmd postfix_extract "return filename postfix: path/name[-_]postfix.ext -> postfix"
-postfix_extract()
+cmd postfix-extract "return filename postfix: path/name[-_]postfix.ext -> postfix"
+postfix-extract()
 {
 	a=${1%.*}
 	echo "${a##*[-_]}"
 }
 
-cmd unzip_dir "handy unzip to directory with name of zip-file"
-unzip_dir()
+cmd unzip-dir "handy unzip to directory with name of zip-file"
+unzip-dir()
 {
 	unzip "$@" -d `str base "$1"`
 }
 
-cmd mac_to_ip "looks for LAN IP for MAC"
-mac_to_ip()
+cmd mac-to-ip "looks for LAN IP for MAC"
+mac-to-ip()
 {
 	ping -q -c 4 -b 255.255.255.255 &> /dev/null
 	arp -n | grep -i "$1" | cut -f 1 -d ' '
 }
 
-cmd ip_to_mac "show MAC address for specified IP in LAN"
-ip_to_mac()
+cmd ip-to-mac "show MAC address for specified IP in LAN"
+ip-to-mac()
 {
 	if which arping > /dev/null; then
 		arping -c 1 "$1" 2> /dev/null | perl -ne '/.*\[(.*)\].*/ && print "$1\n"'
@@ -350,15 +350,15 @@ ip_to_mac()
 	fi
 }
 
-cmd fs_usage "show biggest directories and optionally files on a filesystem, for example on root: fs_usage -a /"
-fs_usage()
+cmd fs-usage "show biggest directories and optionally files on a filesystem, for example on root: fs-usage -a /"
+fs-usage()
 {
 	du --time --one-file-system "$@" | sort -n | tail -n $((LINES-2))
 	df "$@"
 }
 
-cmd PATH_append "appends argument to PATH, if required"
-PATH_append()
+cmd PATH-append "appends argument to PATH, if required"
+PATH-append()
 {
 	if [[ ":$PATH:" == *":$1:"* ]]
 	then
@@ -368,8 +368,8 @@ PATH_append()
 	fi
 }
 
-cmd PATH_insert "inserts argument to head of PATH, if required"
-PATH_insert()
+cmd PATH-insert "inserts argument to head of PATH, if required"
+PATH-insert()
 {
 	if [[ ":$PATH:" == *":$1:"* ]]
 	then
@@ -379,23 +379,23 @@ PATH_insert()
 	fi
 }
 
-cmd PATH_remove "removes argument from PATH"
-PATH_remove()
+cmd PATH-remove "removes argument from PATH"
+PATH-remove()
 {
 	PATH=$(echo ":$PATH:"| sed "s|:$1:|:|" | sed "s|::||g;s|^:||;s|:$||")
 }
 
-cmd PATH_append "prints PATH in readable format"
-PATH_show()
+cmd PATH-append "prints PATH in readable format"
+PATH-show()
 {
 	echo $PATH | sed "s/:/\n/g"
 }
 
-cmd gcc_set "set specified [cross] compiler as default in environment"
-gcc_set()
+cmd gcc-set "set specified [cross] compiler as default in environment"
+gcc-set()
 {
 	#export PATH=/usr/sbin:/usr/bin:/sbin:/bin:
-	PATH_append $(dirname $(which "$1"))
+	PATH-append $(dirname $(which "$1"))
 	export CROSS_COMPILE=$(expr match "$(basename $1)" '\(.*-\)')
 	export CC=${CROSS_COMPILE}gcc
 	export AR=${CROSS_COMPILE}ar
@@ -411,7 +411,7 @@ gcc_set()
 	$CC -v 2>&1 | grep 'gcc version'
 }
 
-cmd get_source "replace substring arg1 to substring arg2 in directory arg3"
+cmd get-source "replace substring arg1 to substring arg2 in directory arg3"
 replace()
 {
 	grep "$1" "$3" \
@@ -419,8 +419,8 @@ replace()
 		| xargs sed -i "s|$1|$2|g"
 }
 
-cmd get_source "download and unpack an open source tarball"
-get_source()
+cmd get-source "download and unpack an open source tarball"
+get-source()
 {
 	case $1 in
 		(git* | *.git) git clone $1 ;;
@@ -433,11 +433,11 @@ get_source()
 		esac
 	}
 
-cmd gnu_build "universal complete build and install of gnu package"
-gnu_build()
+cmd gnu-build "universal complete build and install of gnu package"
+gnu-build()
 {
 	[ "$CC" ] || CC=gcc
-	get_source $1
+	get-source $1
 	shift
 	pushd $n
 	if [ -d debian ]; then
@@ -476,11 +476,11 @@ gnu_build()
 	return $ret
 }
 
-cmd alternative_config_build "build of package, alternatively to gnu_build"
-alternative_config_build()
+cmd alternative-config-build "build of package, alternatively to gnu-build"
+alternative-config-build()
 {
 	[ "$CC" ] || CC=gcc
-	get_source $1
+	get-source $1
 	shift
 	mkdir -p $n/$($CC -dumpmachine)-build~ # '~' to skip by lndir
 	pushd $_
@@ -493,8 +493,8 @@ alternative_config_build()
 	return $ret
 }
 
-cmd build_env "configure staging build environment"
-build_env()
+cmd build-env "configure staging build environment"
+build-env()
 {
 	staging=$(readlink --canonicalize $1)
 	PKG_CONFIG_DIR= #https://autotools.io/pkgconfig/cross-compiling.html
@@ -508,33 +508,33 @@ build_env()
 	export staging PKG_CONFIG_DIR PKG_CONFIG_SYSROOT_DIR DESTDIR CPPFLAGS LDFLAGS
 }
 
-cmd glib_arm_build "demonstration of arm compilation of glib from the scratch"
-glib_arm_build()
+cmd glib-arm-build "demonstration of arm compilation of glib from the scratch"
+glib-arm-build()
 {
-	gcc_set /usr/bin/arm-linux-gnueabi-gcc
-	build_env staging-$($CC -dumpmachine)
-	alternative_config_build http://zlib.net/zlib-1.2.8.tar.gz --prefix=/
-	gnu_build ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz
+	gcc-set /usr/bin/arm-linux-gnueabi-gcc
+	build-env staging-$($CC -dumpmachine)
+	alternative-config-build http://zlib.net/zlib-1.2.8.tar.gz --prefix=/
+	gnu-build ftp://sourceware.org/pub/libffi/libffi-3.2.1.tar.gz
 	cp -a ${staging}/lib/libffi-*/include ${staging}/
 	export glib_cv_stack_grows=no glib_cv_uscore=no ac_cv_func_posix_getpwuid_r=yes ac_cv_func_posix_getgrgid_r=yes
-	gnu_build http://ftp.gnome.org/pub/gnome/sources/glib/2.48/glib-2.48.1.tar.xz --with-pcre=internal
+	gnu-build http://ftp.gnome.org/pub/gnome/sources/glib/2.48/glib-2.48.1.tar.xz --with-pcre=internal
 	file -L staging-$($CC -dumpmachine)/lib/libglib-2.0.so
 	return $?
 }
 
-cmd staging_dir_fix "fix parameter libdir in *.la files in staging cross-compilation directory"
-staging_dir_fix()
+cmd staging-dir-fix "fix parameter libdir in *.la files in staging cross-compilation directory"
+staging-dir-fix()
 {
 	sed -i "s|^libdir='//\?lib'|libdir='`readlink --canonicalize "$1"`/lib'|" \
 		`grep --no-messages --recursive --files-with-matches --include *.la "libdir='//\?lib" "$1"`
 	grep -r --include *.la "libdir=" "$1"
 }
 
-cmd mem_drop_caches "drop chaches and free this memory. Practically not required"
-alias mem_drop_caches="sync; echo 3 | sudo tee /proc/sys/vm/drop_caches"
+cmd mem-drop-caches "drop chaches and free this memory. Practically not required"
+alias mem-drop-caches="sync; echo 3 | sudo tee /proc/sys/vm/drop-caches"
 
-cmd wget_as_me "Run wget with cookies from firefox to access authenticated data"
-wget_as_me()
+cmd wget-as-me "Run wget with cookies from firefox to access authenticated data"
+wget-as-me()
 {
 	sqlite3 -separator "$tab" $(ls -1t $HOME/.mozilla/firefox/*.default*/cookies.sqlite | head -1) \
 		'select host, "TRUE", path, "FALSE", expiry, name, value from moz_cookies' \
@@ -552,8 +552,8 @@ calc()
 	echo "scale=4;" "$@" | bc
 }
 
-cmd md5sum_make "create md5 files for each specified file separately"
-md5sum_make()
+cmd md5sum-make "create md5 files for each specified file separately"
+md5sum-make()
 {
 	while [ -n "$1" ]; do
 	md5sum "$1" > "$1.md5"
@@ -569,14 +569,14 @@ check()
 	eval "$@" && echo -e "$? \033[2;32mOK \033[0;39m" || echo -e "$? \033[2;31mFail \033[0;39m"
 }
 
-# used in lib_sh_demo only
+# used in lib-sh-demo only
 v()
 {
 	echo ">" "$@"
 	eval "$@"
 }
 
-# used in lib_sh_demo only
+# used in lib-sh-demo only
 eq()
 {
 	a="$1"
@@ -586,13 +586,13 @@ eq()
 	echo "$@"
 }
 
-cmd lib_sh_demo "run lib.sh functions for demonstration and testing"
-lib_sh_demo()
+cmd lib-sh-demo "run lib.sh functions for demonstration and testing"
+lib-sh-demo()
 {
 	eq '4.tar.gz' str ext '1/2/3.4.tar.gz'
 	eq '3' str base '1/2/3.4.tar.gz'
-	v postfix_extract path/name_postfix.ext
-	v for_each echo aaa bbb ccc
+	v postfix-extract path/name-postfix.ext
+	v for-each echo aaa bbb ccc
 	mkdir -p dup/sub
 	echo 1 > dup/1
 	cp dup/1 dup/1.1
@@ -603,7 +603,7 @@ lib_sh_demo()
 	check true
 	check false
 	#not supported
-	#v 'wget_as_me "http://mail.google.com/mail?nocheckbrowser&ui=html" -O- \
+	#v 'wget-as-me "http://mail.google.com/mail?nocheckbrowser&ui=html" -O- \
 	#	| lynx -stdin -dump -width=$COLUMNS | grep ^Inbox -A 10'
 }
 
@@ -615,6 +615,6 @@ else
 		echo Lib.sh functions are loaded into the shell environment
 	else
 		echo Lib.sh - a library of shell utility functions
-		echo To get help run \"`basename "$0"` lib_help\"
+		echo To get help run \"`basename "$0"` lib-help\"
 	fi
 fi
