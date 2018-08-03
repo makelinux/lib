@@ -2,9 +2,10 @@ log - safely prints messages to stderr
 ====
 
 
-```
-log () 
-{ 
-    ( echo "$@" 1>&2 )
+``` bash
+log()
+{
+	# Note: echo "$@" > /dev/stderr - resets stderr
+	( 1>&2 echo "$@" )
 }
 ```
