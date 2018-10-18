@@ -6,7 +6,7 @@ gdb-print-prepare - prepares gdb script to print variables and structs in runtim
 gdb-print-prepare()
 {
 	# usage:
-	# gdb_print_prepare $src > app.gdb
+	# gdb-print-prepare $src > app.gdb
 	# gdb --batch --quiet --command=app.gdb app
 	cat  <<-EOF
 	set auto-load safe-path /
