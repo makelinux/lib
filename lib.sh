@@ -551,8 +551,10 @@ cmd gdb-print-prepare "prepares gdb script to print variables and structs in run
 gdb-print-prepare()
 {
 	# usage:
+	# mark print points with empty standalone defines:
+	# gdb_print(huge_struct);
 	# gdb-print-prepare $src > app.gdb
-	# gdb --batch --quiet --command=app.gdb app
+	# gdb --batch --quiet --command=app.gdb $app
 	cat  <<-EOF
 	set auto-load safe-path /
 	EOF
