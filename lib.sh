@@ -547,6 +547,35 @@ staging-dir-fix()
 cmd mem-drop-caches "drop caches and free this memory. Practically not required"
 alias mem-drop-caches="sync; echo 3 | sudo tee /proc/sys/vm/drop-caches"
 
+cmd gdb-print-prepare "prepares gdb script to print variables and structs in runtime"
+gdb-print-prepare()
+{
+	# usage:
+	# gdb_print_prepare $src > app.gdb
+	# gdb --batch --quiet --command=app.gdb app
+	cat  <<-EOF
+	set auto-load safe-path /
+	EOF
+	grep --with-filename --line-number --recursive '^\s\+gdb_print(.*);' $1 | \
+	while IFS=$'\t ;()' read line func var rest; do
+		cat  <<-EOF
+		break ${line%:}
+		commands
+		silent
+		where 1
+		echo \\n$var\\n
+		print $var
+		cont
+		end
+		EOF
+	done
+	cat  <<-EOF
+	run
+	bt
+	echo ---\\n
+	EOF
+}
+
 cmd wget-as-me "Run wget with cookies from firefox to access authenticated data"
 wget-as-me()
 {
