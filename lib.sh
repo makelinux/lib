@@ -398,6 +398,13 @@ PATH-show()
 	echo $PATH | sed "s/:/\n/g"
 }
 
+cmd gcc-set "append a string to a file if it not yet present there"
+file-append-once()
+{
+	mkdir -p $(dirname "$1")
+	grep --quiet --line-regexp --fixed-strings "$2" "$1" || echo "$2" >> "$1"
+}
+
 cmd gcc-set "set specified [cross] compiler as default in environment"
 gcc-set()
 {
