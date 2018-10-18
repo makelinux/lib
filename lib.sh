@@ -205,6 +205,8 @@ system-status-long()
 	echo
 	df --all --human-readable
 	echo
+	sudo -n parted -l || sudo -n flisk -l
+	echo
 	lsblk
 	echo
 	lscpu
@@ -335,8 +337,13 @@ unzip-dir()
 cmd mac-to-ip "looks for LAN IP for MAC"
 mac-to-ip()
 {
-	ping -q -c 4 -b 255.255.255.255 &> /dev/null
-	arp -n | grep -i "$1" | cut -f 1 -d ' '
+	(
+		(for b in $(ip addr ls | awk '/inet .* brd/ {print $4}'); do
+			ping -q -c 1 -b $b &> /dev/null
+		done ) &
+	) 2> /dev/null
+	while ! a=$(arp -n | grep -i "$1"); do sleep 1; log 'waitig' ; done;
+	echo "$a" | (read a1 a2; echo $a1)
 }
 
 cmd ip-to-mac "show MAC address for specified IP in LAN"
@@ -625,7 +632,7 @@ doxygen-bootstrap()
 		CALL_GRAPH             = YES
 		CALLER_GRAPH           = YES
 		INTERACTIVE_SVG        = YES
-		DOT_TRANSPARENT        = YES
+		#DOT_TRANSPARENT        = YES
 		DOT_MULTI_TARGETS      = NO
 		DOT_CLEANUP            = NO
 		OPTIMIZE_OUTPUT_FOR_C  = YES
