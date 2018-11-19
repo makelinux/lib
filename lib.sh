@@ -721,10 +721,10 @@ if [ -n "$*" ]; then
 	eval "$*" # execute arguments
 	#echo $* finished, ret=$?
 else
-	if [ `which "$0"` = "$SHELL" ]; then
+	if [ "$0" != "$BASH_SOURCE" ]; then
 		echo Lib.sh functions are loaded into the shell environment
 	else
 		echo Lib.sh - a library of shell utility functions
-		echo To get help run \"`basename "$0"` lib-help\"
+		echo To get help run \"$BASH_SOURCE lib-help\"
 	fi
 fi
