@@ -20,7 +20,7 @@ doxygen-bootstrap()
 		CALL_GRAPH             = YES
 		CALLER_GRAPH           = YES
 		INTERACTIVE_SVG        = YES
-		DOT_TRANSPARENT        = YES
+		#DOT_TRANSPARENT        = YES
 		DOT_MULTI_TARGETS      = NO
 		DOT_CLEANUP            = NO
 		OPTIMIZE_OUTPUT_FOR_C  = YES
