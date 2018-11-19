@@ -471,7 +471,7 @@ gnu-build()
 		if [ -n "${CROSS_COMPILE}" ]; then
 			configure_opt+=" --host=${CROSS_COMPILE%-}"
 		fi
-		configure_opt+=" --with-sysroot=${staging}"
+		test "${staging}" && configure_opt+=" --with-sysroot=${staging}"
 		configure_opt+=" $* "
 		mkdir -p $($CC -dumpmachine)-build
 		pushd $_
