@@ -15,8 +15,10 @@ str()
 		(ext) echo "${2#*.}";;
 		(rtrim-ext) echo "${2%%.*}";; # path without extension
 		(base) # just filename without path and extension
-			local a=${2##*/}
-			echo "${a%%.*}"
+			expr \
+				match "$2" '.*/\(.*\)\.tar' \| \
+				match "$2" '.*/\(.*\)\.' \| \
+				match "$2" '.*/\(.*\)'
 			;;
 	esac
 	# More: https://www.tldp.org/LDP/abs/html/string-manipulation.html
