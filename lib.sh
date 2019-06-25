@@ -672,7 +672,6 @@ cmd doxygen-bootstrap "generic handy doxygen wrapper"
 doxygen-bootstrap()
 {
 	if [ ! -e Doxyfile ]; then
-		command doxygen -g
 		cat > Doxyfile <<-EOF
 		PROJECT_NAME = "$(basename $PWD)"
 		EXTRACT_ALL            = YES
@@ -691,9 +690,13 @@ doxygen-bootstrap()
 		DOT_CLEANUP            = NO
 		OPTIMIZE_OUTPUT_FOR_C  = YES
 		DOT_FONTNAME           = Ubuntu
+		#CASE_SENSE_NAMES       = YES
+		SOURCE_BROWSER         = YES
+		QUIET = NO
 		EOF
 		# command doxygen -u
 	fi
+	cat Doxyfile | doxygen -s -u - > Doxyfile.expanded
 	command doxygen "$@" 2> doxygen.log
 	xdg-open html/index.html || firefox html/index.html
 }
