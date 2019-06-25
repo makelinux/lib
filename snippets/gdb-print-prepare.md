@@ -1,4 +1,4 @@
-gdb-print-prepare - prepares gdb script to print variables and structs in runtime
+gdb-print-prepare - prepares gdb script to print variables and structs at runtime
 ====
 
 
