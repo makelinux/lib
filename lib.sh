@@ -468,7 +468,7 @@ gnu-build()
 		dpkg-buildpackage -rfakeroot -uc -b
 		return
 	fi
-	test -e configure || autoreconf --install
+	test -e configure || autoreconf --install # configure.ac configure.in
 	if [ -e configure ]; then
 		configure_opt="$configure_opt_init -q"
 		if [ -n "$DESTDIR" ]; then
