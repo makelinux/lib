@@ -624,6 +624,12 @@ check()
 	eval "$@" && echo -e "$? \033[2;32mOK \033[0;39m" || echo -e "$? \033[2;31mFail \033[0;39m"
 }
 
+google-chrome-install()
+{
+	wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+	sudo dpkg -i google-chrome-stable_current_amd64.deb
+}
+
 # used in lib-sh-demo only
 v()
 {
