@@ -436,19 +436,26 @@ replace()
 		| xargs sed -i "s|$1|$2|g"
 }
 
+https-to-git()
+{
+	a=$(expr match "$1" "^https://github.com/\(.*\)") && { echo git@github.com:$a.git; return;}
+	echo "$1"
+}
+
 cmd get-source "download and unpack an open source tarball"
 get-source()
 {
-	case $1 in
-		(git* | *.git) git clone $1 ;;
-		(svn*) git checkout $1 ;;
+	local a=$(https-to-git "$1")
+	case $a in
+		(git* | *.git | https://github.com/*) git clone $a ;;
+		(svn*) git checkout $a ;;
 		(*)
-			fn=$(basename $1)
+			fn=$(basename $a)
 			n=${fn%%.tar.*}
-			! test -f ~/Downloads/"$fn" && (expr match "$1" "^http" || expr match "$1" "^ftp" ) > /dev/null && wget -P ~/Downloads/ $1
+			! test -f ~/Downloads/"$fn" && (expr match "$a" "^http" || expr match "$a" "^ftp" ) > /dev/null && wget -P ~/Downloads/ "$a"
 			[ -e "$n" ] || aunpack -q ~/Downloads/"$fn"
-		esac
-	}
+	esac
+}
 
 cmd gnu-build "universal complete build and install of gnu package"
 gnu-build()
