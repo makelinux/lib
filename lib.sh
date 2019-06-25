@@ -218,7 +218,7 @@ system-status-long()
 	lshw -short
 }
 
-cmd shell_type "tries to identify type of current shell"
+cmd shell-type "tries to identify type of current shell"
 shell-type()
 {
 	# adopted from http://stackoverflow.com/questions/5166657/how-do-i-tell-what-type-my-shell-is
@@ -391,7 +391,7 @@ PATH-insert()
 cmd PATH-remove "removes argument from PATH"
 PATH-remove()
 {
-	PATH=$(echo ":$PATH:"| sed "s|:$1:|:|" | sed "s|::||g;s|^:||;s|:$||")
+	PATH=$(echo ":$PATH:"| sed "s|:$1:|:|g" | sed "s|::||g;s|^:||;s|:$||")
 }
 
 cmd PATH-append "prints PATH in readable format"
@@ -404,7 +404,8 @@ cmd gcc-set "append a string to a file if it not yet present there"
 file-append-once()
 {
 	mkdir -p $(dirname "$1")
-	grep --quiet --line-regexp --fixed-strings "$2" "$1" || echo "$2" >> "$1"
+	grep --quiet --line-regexp --fixed-strings "$2" "$1" && return
+	test -w "$1" && echo "$2" >> "$1" || echo "$2" | sudo tee -a "$1"
 }
 
 cmd gcc-set "set specified [cross] compiler as default in environment"
@@ -549,7 +550,7 @@ staging-dir-fix()
 cmd mem-drop-caches "drop caches and free this memory. Practically not required"
 alias mem-drop-caches="sync; echo 3 | sudo tee /proc/sys/vm/drop-caches"
 
-cmd gdb-print-prepare "prepares gdb script to print variables and structs in runtime"
+cmd gdb-print-prepare "prepares gdb script to print variables and structs at runtime"
 gdb-print-prepare()
 {
 	# usage:
