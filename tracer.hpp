@@ -25,6 +25,8 @@ namespace tracer
 static inline const std::string to_string() {return "";}
 static inline const std::string to_string(const std::string &s) {return '"' + s + '"';}
 
+static inline const std::string to_string(void * const p) {std::stringstream s; s << p; return s.str();}
+
 // for char *
 static inline const std::string to_string(const char * c) {return '"' + std::string(c) + '"';}
 
@@ -33,6 +35,9 @@ static inline const std::string to_string(char * const c) {return '"' + std::str
 
 template <typename T>
 static inline const std::string to_string(const T &s) {return std::to_string(s);}
+
+template <typename T>
+static inline const std::string to_string(T * const p) {return to_string((void *)p);}
 
 #ifndef log_str
 #define log_str(a) do { std::cerr << a << std::endl; } while (0)
@@ -44,14 +49,12 @@ static inline const std::string to_string(const T &s) {return std::to_string(s);
 #define _IF(x) if (x)
 #endif
 
-
 // prints name=value or just raw value for literal strings
-#define _v(var) (strlen(#var) ? \
-		 (tracer::to_string(var) == #var)? \
-		 std::string(#var).substr(1, std::string(#var).length() - 2) + " " \
-		 : std::string(#var) + "=" + tracer::to_string(var) + " " : "")
+#define _v(a) (strlen(#a) ? \
+		 (tracer::to_string(a) == #a) ? \
+		 std::string(#a).substr(1, std::string(#a).length() - 2) + " " \
+		 : std::string(#a) + "=" + tracer::to_string(a) + " " : "")
 
-#define trv(a) do { std::stringstream log; log << file_line() << _v(a); log_str(log.str()); } while (0)
 #define _trace2(s, a, args...) do { s << _v(a); _IF (strlen(#args)) s << _v(args); } while (0)
 #define _trace3(s, a, args...) do { s << _v(a); _IF (strlen(#args)) _trace2(s, args); } while (0)
 #define _trace4(s, a, args...) do { s << _v(a); _IF (strlen(#args)) _trace3(s, args); } while (0)

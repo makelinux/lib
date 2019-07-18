@@ -14,14 +14,14 @@ int main()
 	string s = "string value";
 	char ca[] = "char array";
 	const char * cp = "char pointer";
+	void * p = &i;
+	int * ip = &i;
 
 	std::this_thread::sleep_for(100ms);
-
 	trace(); // prints only file name and line
 	trace("error:", s); // prints literal message
-	trv(i);
-	trv(d);
-	trv(s);
+	trace(p);
+	trace(ip);
 	trace(cp);
 	trace(ca);
 	trace(i, d);
