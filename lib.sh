@@ -734,6 +734,12 @@ load-watch()
 	done
 }
 
+cmd dts-tags "extacts tags (ctags format) from device tree source files"
+dts-tags()
+{
+	grep -oH '\w\+:' "$@" | awk -F: '{print $2"\t"$1"\t/"$2":"}' | LC_ALL=C sort
+}
+
 if [ -n "$*" ]; then
 	eval "$*" # execute arguments
 	#echo $* finished, ret=$?

@@ -65,3 +65,4 @@ List of available commands:
 * check - runs verbosely specified command and prints return status
 * lib_sh_demo - run lib.sh functions for demonstration and testing
 
+* dts-tags - extacts tags (ctags format)from device tree source files
