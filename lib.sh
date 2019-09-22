@@ -624,7 +624,7 @@ cmd check "runs verbosely specified command and prints return status"
 check()
 {
 	echo -n "Running: $@ : "
-	eval "$@" && echo -e "$? \033[2;32mOK \033[0;39m" || echo -e "$? \033[2;31mFail \033[0;39m"
+	eval "$@" && { let successes+=1; echo -e "$? \033[2;32mOK \033[0;39m"; } || { let fails+=1; echo -e "$? \033[2;31mFail \033[0;39m"; }
 }
 
 google-chrome-install()
