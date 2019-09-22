@@ -15,54 +15,58 @@ List of available commands:
 * ps-tree - lists process tree via ps, see also pstree -p
 * ps-cpu - lists most CPU consuming processes
 * ps-mem - lists most memory consuming processes
+* default-eth - provides default Ethernet interface
+* external-ip - Provides external IP
 * ps-wchan - shows what processes are waiting for, used in debugging blocked processes
-* ls_size - list files with sizes in bytes, shorter than ls -l
+* ls-size - list files with sizes in bytes, shorter than ls -l
 * mplayer-rotate-right - play video rotated right, used to play vertically captured videos
 * hist - handy history, up to one screen length
 * deb-list - list content of specified deb file
-* quotation_highlight - higlight text in quotation marks ("quotation")
-* readline-bindings - shows current readline bindings, used as shell keyboard shortcuts, in more readable format, see also man readline
+* quotation-highlight - highlight text in quotation marks ("quotation")
+* keyboard-shortcuts - bash keyboard shortcuts. See also man readline.
 * tcpdump-text - tcpdump of payload in text
 * make-debug - verbose make
 * git-diff - handy git diff
-* git_prompt - sets shell prompt to show git branch
-* git_fixup - interactive fixup of specified number of last git commits
-* git_ign_add - add files' names with path to appropriate .gitignore list
-* trap_err - traps command failures, print reuturn value and returns, better than set -o errexit
-* system_status_short - shows short summary of system resources (RAM,CPU) usage
-* system_status_long - shows long system status and statistics by running various system utilities
-* shell_type - tries to identify type of current shell
-* ps_of - specified process info
-* proc_mem_usage - returns percentage memory usage by specified process
-* dir_diff - compare listings of two specified directories
+* git-prompt - sets shell prompt to show git branch
+* git-fixup - interactive fix up of specified number of last git commits
+* git-ign-add - add files' names with path to appropriate .gitignore list
+* log - safely prints messages to stderr
+* trap-err - traps command failures, print return value and returns, better than set -o errexit
+* system-status-short - shows short summary of system resources (RAM,CPU) usage
+* system-status-long - shows long system status and statistics by running various system utilities
+* shell-type - tries to identify type of current shell
+* ps-of - specified process info
+* proc-mem-usage - returns percentage memory usage by specified process
+* dir-diff - compare listings of two specified directories
 * retry - retry argument operation till success
 * duplicates - finds duplicate files. To follow symbolic links run duplicate -L $DIR
-* for_each - applies an operation to set of arguments one by one
-* ext_get - extracts extension from specified filename
-* ext_strip - returns filename without extension
-* name_get - returns just filename without path and extension
-* postfix_extract - return filename postfix:  path/name[-_]postfix.ext -\> postfix
-* unzip_dir - handy unzip to directory with name of zip-file
-* mac_to_ip - looks in LAN IP for MAC
-* ip_to_mac - show MAC address for specified IP in LAN
-* fs_usage - show biggest directories and optionally files on a filesystem, for example on root: fs_usage -a /
-* PATH_append - appends argument to PATH, if required
-* PATH_insert - inserts argument to head of PATH, if required
-* PATH_remove - removes argument from PATH
-* PATH_append - prints PATH in readable format
-* gcc_set - set specified [cross] compiler as default in environment
-* get_source - download and unpack an open source tarball
-* gnu_build - universal complete build and install of gnu package
-* alternative_config_build - build of package, alternatively to gnu_build
-* build_env - configure staging build environment
-* glib_arm_build - demonstration of arm compilation of glib from the scratch
-* staging_dir_fix - fix parameter libdir in *.la files in staging cross-compilation directory
-* mem_drop_caches - drop chaches and free this memory. Practically not required
-* mem_avail_kb - Returns available for allocation RAM, which is sum of MemFree, Buffers and Cached memory
-* wget_as_me - Run wget with cookies from firefox to access authenticated data
+* for-each - applies an operation to set of arguments one by one
+* str - readable string manipulations: ltrim, ltrim-max, rtrim, rtrim-max, subst, subst-all
+* postfix-extract - return filename postfix: path/name[-_]postfix.ext -> postfix
+* unzip-dir - handy unzip to directory with name of zip-file
+* mac-to-ip - looks for LAN IP for MAC
+* ip-to-mac - show MAC address for specified IP in LAN
+* fs-usage - show biggest directories and optionally files on a filesystem, for example on root: fs-usage -a /
+* PATH-append - prints PATH in readable format
+* PATH-insert - inserts argument to head of PATH, if required
+* PATH-remove - removes argument from PATH
+* PATH-append - prints PATH in readable format
+* gcc-set - set specified [cross] compiler as default in environment
+* gcc-set - set specified [cross] compiler as default in environment
+* get-source - download and unpack an open source tarball
+* get-source - download and unpack an open source tarball
+* gnu-build - universal complete build and install of gnu package
+* alternative-config-build - build of package, alternatively to gnu-build
+* build-env - configure staging build environment
+* glib-arm-build - demonstration of arm compilation of glib from the scratch
+* staging-dir-fix - fix parameter libdir in *.la files in staging cross-compilation directory
+* mem-drop-caches - drop caches and free this memory. Practically not required
+* gdb-print-prepare - prepares gdb script to print variables and structs at runtime
+* wget-as-me - Run wget with cookies from firefox to access authenticated data
 * calc - calculate with bc specified floating point expression
-* md5sum_make - create md5 files for each specified file separately
+* md5sum-make - create md5 files for each specified file separately
 * check - runs verbosely specified command and prints return status
-* lib_sh_demo - run lib.sh functions for demonstration and testing
-
+* lib-sh-demo - run lib.sh functions for demonstration and testing
+* doxygen-bootstrap - generic handy doxygen wrapper
+* load-watch - kills memory and cpu hogs when load average is too high
 * dts-tags - extacts tags (ctags format)from device tree source files
