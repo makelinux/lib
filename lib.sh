@@ -176,7 +176,21 @@ log()
 cmd trap-err "traps command failures, print return value and returns, better than set -o errexit"
 trap-err()
 {
-	trap 'echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO} ${FUNCNAME[*]}" > /dev/stderr;return $ret 2> /dev/null' ERR
+	trap '(1>&2 echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO} ${FUNCNAME[*]}";)' ERR
+}
+
+trap-err-return()
+{
+	trap '(1>&2 echo -e $"\e[2;31mFAIL \e[0;39m ret=$? ${BASH_SOURCE[0]}:${LINENO} ${FUNCNAME[*]}"; return $ret; )' ERR
+}
+
+trap-err-test()
+{
+	trap-err
+	echo 1
+	false
+	echo 2
+	trap '' ERR
 }
 
 ###############################################################################
