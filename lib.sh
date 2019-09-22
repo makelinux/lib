@@ -713,6 +713,7 @@ doxygen-bootstrap()
 		EOF
 		# command doxygen -u
 	fi
+	cat Doxyfile | doxygen -u - > Doxyfile.explained
 	cat Doxyfile | doxygen -s -u - > Doxyfile.expanded
 	command doxygen "$@" 2> doxygen.log
 	xdg-open html/index.html || firefox html/index.html
