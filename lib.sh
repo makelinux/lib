@@ -26,10 +26,13 @@ export tab=$'\t'
 export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
 
 unset usage
+unset cmds
 declare -A usage
+declare -a cmds
 
 cmd()
 {
+	cmds+=($1)
 	usage[$1]="$2"
 }
 
@@ -38,7 +41,7 @@ lib-help()
 {
 	echo -e "List of available commands:\n"
 
-	for i in "${!usage[@]}"
+	for i in ${cmds[*]}
 	do
 		echo "$i - ${usage[$i]}"
 	done
