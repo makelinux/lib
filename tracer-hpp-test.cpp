@@ -4,7 +4,10 @@
 #include <thread>
 
 using std::string;
+
+#if __cplusplus >= 201402L
 using namespace std::literals::chrono_literals;
+#endif
 
 int main()
 {
@@ -17,7 +20,9 @@ int main()
 	void * p = &i;
 	int * ip = &i;
 
+#if __cplusplus >= 201402L
 	std::this_thread::sleep_for(100ms);
+#endif
 	trace(); // prints only file name and line
 	trace("error:", s); // prints literal message
 	trace(p);
@@ -25,6 +30,7 @@ int main()
 	trace(cp);
 	trace(ca);
 	trace(i, d);
+	trace(i, s);
 	trace(i, d, s);
 	trace(i, d, s, cp);
 	trace(i, d, s, cp, ca);
