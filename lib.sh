@@ -779,6 +779,15 @@ dts-tags()
 	grep -oH '\w\+:' "$@" | awk -F: '{print $2"\t"$1"\t/"$2":"}' | LC_ALL=C sort
 }
 
+security-checks()
+{
+	echo GOOD:
+	egrep -i '^PubKeyAuthentication yes|^PasswordAuthentication no' <(sudo sshd -T) /etc/ssh/sshd_config
+	echo BAD:
+	egrep -i '^PasswordAuthentication yes|^PermitRootLogin yes|^PermitEmptyPasswords yes' <(sudo sshd -T) /etc/ssh/sshd_config
+	echo -- done
+}
+
 if [ -n "$*" ]; then
 	eval "$*" # execute arguments
 	#echo $* finished, ret=$?
