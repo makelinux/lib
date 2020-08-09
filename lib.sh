@@ -117,12 +117,11 @@ alias deb-list="dpkg-deb --contents"
 
 cmd quotation-highlight "highlight text in quotation marks (\"quotation\")"
 ansi_rev=$'\e[7m'
-ansi_norm=$'\e[0m'
 alias quotation-highlight=' sed "
 	s|\\\\\\\\|:dbs:|g;
 	s|\\\\\"|:bsq:|g;
 	s|\\\\\"|:quotation:|g;
-	s|\"\([^\"]*\?\)\"| $ansi_rev\1$ansi_norm |g;
+	s|\"\([^\"]*\?\)\"| $ansi_rev\1$reset_color |g;
 	s|:quotation:|\\\\\"|g;
 	s|:bsq:|\\\\\\\"|g;
 	s|:dbs:|\\\\\\\\|g"'
@@ -290,6 +289,12 @@ retry()
 	done
 }
 
+exclude_dirs=(tmp .git .repo .svn "*._comment" .dropbox.cache third-party out intermediates .gradle .idea staging '_build_*' .cxx)
+if [ "$BASH_VERSION" ]; then
+grep_exclude_dirs="$(eval echo "'--exclude-dir='"{$(IFS=','$IFS; eval echo "${exclude_dirs[*]}")} )"
+find_exclude=$(eval echo "\( \( -false" "' -o -name '"{$(IFS=','$IFS; eval echo "${exclude_dirs[*]}")} "\) -a -prune \) -o ")
+fi
+
 cmd duplicates 'finds duplicate files. To follow symbolic links run duplicate -L $DIR'
 duplicates()
 {
@@ -301,7 +306,8 @@ duplicates()
 	# Troubleshooting:
 	# on out of memory define TMPDIR
 	#
-	find "$@" -type f -not -regex '.*/\.svn/.*' -printf "%10i\t%10s\t%p\n" \
+	find "$@" $find_exclude -type f \
+		-printf "%10i\t%10s\t%p\n" \
 		| sort -n \
 		| uniq --unique -w10 \
 		| cut -f 2,3 | sort -n \
