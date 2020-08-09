@@ -6,10 +6,13 @@
 #pragma once
 #include <string>
 #include <sstream>
-#include <chrono>
 #include <iostream>
-
 #include <string.h>
+
+#if __cplusplus >= 201703
+#include <chrono>
+#endif
+
 
 /** \cond */
 
@@ -36,8 +39,10 @@ static inline const std::string to_string(const char * c) {return '"' + std::str
 // for const char x[]
 static inline const std::string to_string(char * const c) {return '"' + std::string(c) + '"';}
 
+#if __cplusplus >= 201103
 template <typename T>
 static inline const std::string to_string(const T &s) {return std::to_string(s);}
+#endif
 
 template <typename T>
 static inline const std::string to_string(T * const p) {return to_string((void *)p);}
@@ -102,6 +107,7 @@ do { std::stringstream log; \
 	log_str(log.str()); \
 } while (0)
 
+#if __cplusplus >= 201703
 static inline double duration(std::chrono::time_point<std::chrono::steady_clock> start)
 {
 	return std::chrono::duration<double> {std::chrono::steady_clock::now() - start}.count();
@@ -115,4 +121,5 @@ struct _duration {
 };
 
 #define measure_block_duration() tracer::_duration _block_duration(file_line());
+#endif
 } // namespace tracer
