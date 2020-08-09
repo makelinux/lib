@@ -78,14 +78,19 @@ alias ps-all='ps -AF'
 cmd ps-threads "lists processes with threads"
 alias ps-threads="ps -ALf"
 
+cmd ps-recent "lists resent user processes"
+alias ps-recent='ps -x -o etime,pid,comm,%cpu,%mem --sort etime | head -n$((LINES-2))'
+
 cmd ps-tree "lists process tree via ps, see also pstree -p"
 alias ps-tree="ps -ejH"
 
 cmd ps-cpu "lists most CPU consuming processes"
-alias ps-cpu="ps -e -o pcpu,pid,comm --sort -%cpu | head -n 5"
+alias ps-cpu="ps -e -o pcpu,pid,comm --sort -%cpu | head -n 10"
 
 cmd ps-mem "lists most memory consuming processes"
-alias ps-mem="ps -e -o pmem,vsz,rss,pid,comm --sort -%mem | head -n 5"
+alias ps-mem="ps -e -o pmem,vsz,rss,pid,comm --sort -%mem | head -n 10"
+
+alias ps-cpu-mem="ps -e -o pcpu,pmem,rss,pid,comm --sort -%cpu,-%mem | head -n 10"
 
 cmd default-eth "provides default Ethernet interface"
 alias default-eth='ip route | awk "/default/ { print \$5 }"'
