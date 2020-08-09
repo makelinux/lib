@@ -245,23 +245,7 @@ system-status-long()
 }
 
 cmd shell-type "tries to identify type of current shell"
-shell-type()
-{
-	# adopted from http://stackoverflow.com/questions/5166657/how-do-i-tell-what-type-my-shell-is
-	# see also http://www.in-ulm.de/~mascheck/various/whatshell/whatshell.sh.html
-	# also can be useful:
-	# ps -p $$ -o comm=
-	# ps -p $$ -o command=
-	if test -n "$ZSH_VERSION"; then
-		echo zsh
-	elif test -n "$BASH_VERSION"; then
-		echo bash
-	elif test -n "$KSH_VERSION"; then
-		echo ksh
-	else
-		/bin/ps -p $$ -o command=| sed "s@$0@@;s@busybox @@"
-	fi
-}
+alias shell-type='ps -p $$ -o comm='
 
 cmd ps-of "specified process info"
 ps-of()
