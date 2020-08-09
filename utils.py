@@ -1,13 +1,21 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
 from sys import *
 from os.path import *
 from netifaces import *
 from munch import *
 from pprint import *
+from sys import *
+from inspect import *
+import inspect
+import types
 
 
 def net_info():
+    '''
+    Gives basic networking info like local IP
+    '''
     net = Munch()
     net.def_if = gateways()['default'][AF_INET][1]
     net.ip = ifaddresses(net.def_if)[AF_INET][0]['addr']
@@ -16,6 +24,9 @@ def net_info():
 
 
 def repeated_gray():
+    '''
+    Filters input text and prints in gray color lines which was already before
+    '''
     passed = {}
     for l in stdin:
         l = l.rstrip()
@@ -27,6 +38,9 @@ def repeated_gray():
 
 
 def commonprefix_gray():
+    '''
+    Filters input text and prints in gray color start of current line which is same like previous
+    '''
     p = ''
     pcl = 0
     for l in stdin:
@@ -42,7 +56,6 @@ def commonprefix_gray():
         p = l
         pcl = cl
 
-
 if __name__ == "__main__":
     try:
         ret = 0
@@ -55,6 +68,10 @@ if __name__ == "__main__":
                 ret = eval(a1 + '(' + ', '.join("'%s'" % (a)
                                                 for a in argv[1:]) + ')')
             pprint(str(ret)) if ret else 0
+        else:
+            for m in getmembers(modules[__name__]):
+                if isfunction(m[1]) and m[1].__module__ == __name__:
+                    help(m[1])
         if isinstance(ret, type(False)) and ret == False:
             exit(os.EX_CONFIG)
     except KeyboardInterrupt:
