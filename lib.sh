@@ -494,13 +494,14 @@ cmd gnu-build "universal complete build and install of gnu package"
 gnu-build()
 {
 	[ "$CC" ] || CC=gcc
-	get-source $1
+	[ "$1" ] && get-source $1 || n=.
 	shift
 	pushd $n
 	if [ -d debian ]; then
 		dpkg-buildpackage -rfakeroot -uc -b
 		return
 	fi
+	test autogen.sh -nt configure && ./autogen.sh -q
 	test -e configure || autoreconf --install # configure.ac configure.in
 	if [ -e configure ]; then
 		configure_opt="$configure_opt_init -q"
