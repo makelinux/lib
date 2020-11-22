@@ -17,7 +17,13 @@ def net_info():
     Gives basic networking info like local IP
     '''
     net = Munch()
-    net.def_if = gateways()['default'][AF_INET][1]
+    net.interfaces = interfaces()
+    net.def_if = interfaces()[1]
+    try:
+        net.def_if = gateways()['default'][AF_INET][1]
+    except KeyError:
+        pass
+
     net.ip = ifaddresses(net.def_if)[AF_INET][0]['addr']
     net.def_mac = ifaddresses(net.def_if)[AF_PACKET][0]['addr']
     return dict(net)
@@ -67,7 +73,7 @@ if __name__ == "__main__":
             else:
                 ret = eval(a1 + '(' + ', '.join("'%s'" % (a)
                                                 for a in argv[1:]) + ')')
-            pprint(str(ret)) if ret else 0
+            pprint(ret) if ret else 0
         else:
             for m in getmembers(modules[__name__]):
                 if isfunction(m[1]) and m[1].__module__ == __name__:
