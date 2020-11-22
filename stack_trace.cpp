@@ -14,9 +14,7 @@ using namespace std;
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
 #endif
 
-extern "C" {                                                                                                            
-
-int stack_trace(void)
+extern "C" int stack_trace(void)
 {
 	size_t size;
 	size_t i;
@@ -43,6 +41,4 @@ int stack_trace(void)
 	cerr << "\n";
 	free(strings);
 	return 0;
-}
-
 }
