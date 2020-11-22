@@ -149,6 +149,9 @@ alias make-debug="remake --debug=bv SHELL='/bin/bash -vx' "
 cmd git-diff "handy git diff"
 alias git-diff='git diff --relative --no-prefix -w'
 
+alias repo-braches='repo forall -p -c git for-each-ref --format="%(refname:short)" refs/heads/*'
+cmd repo-braches "list git branches of repo subprojects"
+
 cmd git-prompt "sets shell prompt to show git branch"
 git-prompt()
 {
