@@ -1,7 +1,9 @@
 // make -B tracer-hpp-test CXXFLAGS=--std=c++17
 
 #include "tracer.hpp"
+#if __cplusplus > 201103
 #include <thread>
+#endif
 
 using std::string;
 
@@ -11,7 +13,9 @@ using namespace std::literals::chrono_literals;
 
 int main()
 {
+#if __cplusplus >= 201103
 	measure_block_duration();
+#endif
 	int i = -123;
 	double d = 123.456;
 	string s = "string value";
@@ -40,4 +44,5 @@ int main()
 	// up to 16 variables
 	trace(i, d, s, cp, ca, i, d, s, i, d, s, cp, ca, i, d, s);
 	trace(tracer::duration(_block_duration.start));
+	trace(s, i);
 }

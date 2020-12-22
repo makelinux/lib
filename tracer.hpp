@@ -9,10 +9,9 @@
 #include <iostream>
 #include <string.h>
 
-#if __cplusplus >= 201703
+#if __cplusplus >= 201103
 #include <chrono>
 #endif
-
 
 /** \cond */
 
@@ -21,7 +20,7 @@
 #define __file__	ctracer_cut_path(__FILE__)
 #endif
 
-#define file_line() (string(__file__) + ":" + std::to_string(__LINE__) + ":" + __func__ +" ")
+#define file_line() (string(__file__) + ":" + std::to_string(__LINE__) + ": " + __func__ +" ")
 
 #define _strlen(s) std::char_traits<char>::length(s)
 
@@ -107,7 +106,7 @@ do { std::stringstream log; \
 	log_str(log.str()); \
 } while (0)
 
-#if __cplusplus >= 201703
+#if __cplusplus >= 201103
 static inline double duration(std::chrono::time_point<std::chrono::steady_clock> start)
 {
 	return std::chrono::duration<double> {std::chrono::steady_clock::now() - start}.count();
