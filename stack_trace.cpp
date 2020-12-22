@@ -10,35 +10,37 @@
 
 using namespace std;
 
-#ifndef ARRAY_SIZE
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
-#endif
-
 extern "C" int stack_trace(void)
 {
 	size_t size;
-	size_t i;
-	void *bt[32];
+	int i;
+	void *bt[16];
 
 	size = backtrace(bt, sizeof(bt)/sizeof(bt[0]));
 	char **strings = backtrace_symbols(bt, size);
-
-	for (i = size - 1; i > 0; i--) {
+	basic_stringstream<char> buff;
+	for (i = 0; i < size; i++)
+		cerr << strings[i] << '\n';
+	for (i = size - 1; i > -1; i--) {
 		if (!bt[i])
 			break;
-		smatch m;
 		string s = strings[i];
-		if (!regex_match(s, m, regex(".*\\(([^+]+)\\+.*\\).*")))
-			return -1;
+		smatch m;
+		if (!regex_match(s, m, regex(".*\\(([^+]+)\\+.*\\).*"))) {
+			buff << "> … " ;
+			continue;
+		}
 		char *demangled
 			= abi::__cxa_demangle(m[1].str().c_str(), 0, 0, 0);
-
 		if (demangled)
 			*strchrnul(demangled, '(') = 0;
-		cerr << " > " << (demangled?:m[1].str().c_str()) ;
+		else
+			demangled = strdup(m[1].str().c_str());
+		buff << "> " << (demangled?:m[1].str().c_str()) << " ";
 		free(demangled);
 	}
-	cerr << "\n";
+	buff << "\n";
+	cerr << buff.str();
 	free(strings);
 	return 0;
 }

@@ -8,5 +8,5 @@ extern "C" void c_func()
 
 int main()
 {
-	c_func();
+	[]() { c_func();}();
 }
