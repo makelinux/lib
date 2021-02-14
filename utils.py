@@ -10,6 +10,8 @@ from sys import *
 from inspect import *
 import inspect
 import types
+import pyiface
+from pyiface.ifreqioctls import IFF_UP, IFF_RUNNING
 
 
 def net_info():
@@ -17,7 +19,7 @@ def net_info():
     Gives basic networking info like local IP
     '''
     net = Munch()
-    net.interfaces = interfaces()
+    net.interfaces = dict()
     net.def_if = interfaces()[1]
     try:
         net.def_if = gateways()['default'][AF_INET][1]
@@ -26,6 +28,16 @@ def net_info():
 
     net.ip = ifaddresses(net.def_if)[AF_INET][0]['addr']
     net.def_mac = ifaddresses(net.def_if)[AF_PACKET][0]['addr']
+    for i in interfaces():
+            ifd = Munch()
+            flags = pyiface.Interface(name=i).flags
+            ifd.flags = "U" if flags & IFF_UP > 0 else ""
+            ifd.flags += "R" if flags & IFF_RUNNING > 0 else ""
+            try:
+                ifd.addr= ifaddresses(i)[AF_INET][0]['addr']
+            except KeyError:
+                pass
+            net.interfaces[i] = dict(ifd)
     return dict(net)
 
 
