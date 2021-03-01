@@ -1,0 +1,4 @@
+ctracer-test
+ctracer-test.ko
+ctracer-test.mod
+stack_trace_check
