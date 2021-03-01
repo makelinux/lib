@@ -452,7 +452,8 @@ static inline int lookup_symbol_name(unsigned long addr, char *symbol)
 	lookup_symbol_name((unsigned long)__builtin_return_address(0), _caller); \
 	if (_trace_enter_num < 100) { \
 		_ret_msg = (char*)malloc(_CTRACRE_BUF_LEN); \
-		if (_ret_msg) snprintf(_ret_msg, _CTRACRE_BUF_LEN, "%s < %s }", _caller, __func__);  \
+		if (_ret_msg) { \
+		int rc = snprintf(_ret_msg, _CTRACRE_BUF_LEN, "%s < %s }", _caller, __func__); (void)rc;} \
 		tracef("%s > %s { @ %s:%d #%d" EOL, _caller, __func__,  __file__, __LINE__, _trace_enter_num); \
 	} }
 
