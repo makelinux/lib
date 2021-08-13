@@ -57,14 +57,14 @@ static inline const std::string to_string(T * const p) {return to_string((void *
 #endif
 
 // prints name=value or just raw value for literal strings
-#define _v(a) (_strlen(#a) ? \
+#define _v(a) ({auto as = tracer::to_string(a); _strlen(#a) ? \
 		 /* if it is literal */ \
-		 (tracer::to_string(a) == #a) ? \
+		 (as == #a) ? \
 		 /* Assuming string literal within '"'. */ \
 		 /* Getting just content of string literal. */ \
 		 std::string(#a).substr(1, std::string(#a).length() - 2) + " " \
 		 /* else */ \
-		 : std::string(#a) + "=" + tracer::to_string(a) + " " : "")
+		 : std::string(#a) + "=" + as + " " : ""; })
 
 #define _trace2(s, a, args...) do { s << _v(a); _IF (!!_strlen(#args)) s << _v(args); } while (0)
 #define _trace3(s, a, args...) do { s << _v(a); _IF (!!_strlen(#args)) _trace2(s, args); } while (0)
