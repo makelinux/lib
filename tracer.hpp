@@ -20,7 +20,7 @@
 #define __file__	ctracer_cut_path(__FILE__)
 #endif
 
-#define file_line() (string(__file__) + ":" + std::to_string(__LINE__) + ": " + __func__ +" ")
+#define file_line() (std::string(__file__) + ":" + std::to_string(__LINE__) + ": " + __func__ + " ")
 
 #define _strlen(s) std::char_traits<char>::length(s)
 
