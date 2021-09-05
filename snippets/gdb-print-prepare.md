@@ -1,22 +1,32 @@
-gdb-print-prepare - prepares gdb script to print variables and structs at runtime
+gdb-print-prepare - utility to print C,C++ variables and structs at runtime
 ====
 
 
 ``` bash
 gdb-print-prepare()
 {
-	# usage:
-	# mark print points with empty standalone defines:
-	# gdb_print(huge_struct);
-	# gdb-print-prepare $src > app.gdb
-	# gdb --batch --quiet --command=app.gdb $app
-	cat  <<-EOF
+	if [[ $# == 0 ]]; then
+		cat <<-EOF
+ 
+		Usage:
+ 
+		Mark print points in C or C++ sources with pseudo comment:
+		// gdb_print(big_struct)
+		gdb-print-prepare \$src > app.gdb
+		gdb --batch --quiet --command=app.gdb \$app
+ 
+		See file gdb-print-demo.c for example.
+ 
+		EOF
+		return
+	fi
+	cat <<-EOF
 	set auto-load safe-path /
 	EOF
-	grep --with-filename --line-number --recursive '^\s\+gdb_print(.*);' $1 | \
-	while IFS=$'\t ;()' read line func var rest; do
-		cat  <<-EOF
-		break ${line%:}
+	grep --with-filename --line-number --recursive --only-matching 'gdb_print(.*)' $1 | \
+	while IFS=$'\t :;()' read file line func var rest; do
+		cat <<-EOF
+		break $file:$line
 		commands
 		silent
 		where 1
@@ -26,9 +36,8 @@ gdb-print-prepare()
 		end
 		EOF
 	done
-	cat  <<-EOF
+	cat <<-EOF
 	run
-	bt
 	echo ---\\n
 	EOF
 }
