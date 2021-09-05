@@ -12,6 +12,11 @@ import inspect
 import types
 import pyiface
 from pyiface.ifreqioctls import IFF_UP, IFF_RUNNING
+from collections import defaultdict
+from bs4 import BeautifulSoup
+import datetime
+import signal
+
 
 
 def net_info():
@@ -26,13 +31,27 @@ def net_info():
     except KeyError:
         pass
 
-    net.ip = ifaddresses(net.def_if)[AF_INET][0]['addr']
-    net.def_mac = ifaddresses(net.def_if)[AF_PACKET][0]['addr']
+    try:
+        net.ip = ifaddresses(net.def_if)[AF_INET][0]['addr']
+        net.def_mac = ifaddresses(net.def_if)[AF_PACKET][0]['addr']
+    except KeyError:
+        pass
+
+    #s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    #n = s.fileno()
+    #ifr = ifreq()
+    #ifr.ifr_ifrn = "lo".encode('utf-8')
+    #fcntl.ioctl(n, SIOCGIFFLAGS, ifr);
+    #print("SIOCGIFFLAGS", ifr.ifr_flags);
+    net.ifs = " ".join(interfaces())
     for i in interfaces():
             ifd = Munch()
             flags = pyiface.Interface(name=i).flags
-            ifd.flags = "U" if flags & IFF_UP > 0 else ""
-            ifd.flags += "R" if flags & IFF_RUNNING > 0 else ""
+            #net.flags = defaultdict(lambda: Munch())
+            if flags & IFF_UP > 0:
+                ifd.flags = "U" 
+            if flags & IFF_RUNNING > 0:
+                ifd.flags += "R"
             try:
                 ifd.addr= ifaddresses(i)[AF_INET][0]['addr']
             except KeyError:
@@ -54,6 +73,22 @@ def repeated_gray():
             print(l)
             passed[l] = True
 
+def info_gray():
+    '''
+    Filters input text and prints in gray color info lines
+    '''
+    passed = {}
+    for l in stdin:
+        l = l.rstrip()
+        e = l.find('=ERR=')
+        if e != -1:
+            print(l[:e] + '\033[1;38m=ERR=\033[0m' + l[e+5:])
+        elif 'INFO' in l:
+            print('\033[2;30m%s\033[0m' % (l))
+        else:
+            print(l)
+
+
 
 def commonprefix_gray():
     '''
@@ -65,7 +100,7 @@ def commonprefix_gray():
         l = l.rstrip()
         c = commonprefix([p, l])
         cl = len(c)
-        print('\033[37m' + l[:cl] + '\033[30m' + l[cl:])
+        print('\033[2;36m' + l[:cl] + '\033[0;30m' + l[cl:])
         if False:
             if cl < pcl:
                 print(l)
@@ -75,6 +110,10 @@ def commonprefix_gray():
         pcl = cl
 
 if __name__ == "__main__":
+    def handler(signum, frame):
+        exit(0)
+
+    signal.signal(signal.SIGHUP, handler)
     try:
         ret = 0
         if len(argv) > 1:

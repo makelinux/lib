@@ -13,7 +13,9 @@ duplicates()
 	# Troubleshooting:
 	# on out of memory define TMPDIR
 	#
-	find "$@" -type f -not -regex '.*/\.svn/.*' -printf "%10i\t%10s\t%p\n" \
+	set -o noglob
+	find "$@" $find_exclude -type f \
+		-printf "%10i\t%10s\t%p\n" \
 		| sort -n \
 		| uniq --unique -w10 \
 		| cut -f 2,3 | sort -n \
@@ -23,5 +25,6 @@ duplicates()
 		| xargs -0 -i{} sha1sum "{}" | sort \
 		| uniq --all-repeated=separate -w32 \
 		| cut -d ' ' -f 3-
+	set +o noglob
 }
 ```

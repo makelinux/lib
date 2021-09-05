@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# Author: Constantine Shulyupin const@makelinux.com
-#
-# Copyright © 2013
+# Copyright (C) 2013-2021 Constantine Shulyupin
 #
 # GPL License
 
@@ -237,6 +235,10 @@ system-status-long()
 	echo
 	lscpu
 	echo
+	ip addr
+	echo
+	ip route
+	echo
 	lsusb
 	echo
 	lspci
@@ -244,7 +246,9 @@ system-status-long()
 	lshw -short
 	echo -e "Biggest packages:"
 	dpkg-query -W -f='${Installed-Size} ${Package} - ${Description}\n' | sort -n | tail -n 10
-
+	echo -e "Old unused files:"
+	find / -mount -type f -atime +1000 -ls 2> /dev/null
+	grep -q -w "127.0.0.1.*$(hostname)" /etc/hosts || echo warning: no hostname for localhost
 }
 
 cmd shell-type "tries to identify type of current shell"
@@ -281,10 +285,11 @@ retry()
 	done
 }
 
-exclude_dirs=(tmp .git .repo .svn "*._comment" .dropbox.cache third-party out intermediates .gradle .idea staging '_build_*' .cxx)
+exclude_dirs=(tmp .git .repo .svn "*._comment" .dropbox.cache third-party out intermediates .gradle .idea "_build_*" .cxx Debug CMakeFiles build)
 if [ "$BASH_VERSION" ]; then
-grep_exclude_dirs="$(eval echo "'--exclude-dir='"{$(IFS=','$IFS; eval echo "${exclude_dirs[*]}")} )"
-find_exclude=$(eval echo "\( \( -false" "' -o -name '"{$(IFS=','$IFS; eval echo "${exclude_dirs[*]}")} "\) -a -prune \) -o ")
+exclude_dirs_with_coma="$(IFS=','$IFS; eval echo "${exclude_dirs[*]}")"
+grep_exclude_dirs="$(eval echo "'--exclude-dir='"{$exclude_dirs_with_coma} )"
+find_exclude="$(eval echo "\( \( -false" "' -o -name '"{$exclude_dirs_with_coma} " \) -a -prune \) -o ")"
 fi
 
 cmd duplicates 'finds duplicate files. To follow symbolic links run duplicate -L $DIR'
@@ -298,6 +303,7 @@ duplicates()
 	# Troubleshooting:
 	# on out of memory define TMPDIR
 	#
+	set -o noglob
 	find "$@" $find_exclude -type f \
 		-printf "%10i\t%10s\t%p\n" \
 		| sort -n \
@@ -309,6 +315,7 @@ duplicates()
 		| xargs -0 -i{} sha1sum "{}" | sort \
 		| uniq --all-repeated=separate -w32 \
 		| cut -d ' ' -f 3-
+	set +o noglob
 }
 
 cmd for-each "applies an operation to set of arguments one by one"
@@ -779,15 +786,15 @@ dts-tags()
 security-checks()
 {
 	echo GOOD:
-	egrep -i '^PubKeyAuthentication yes|^PasswordAuthentication no' <(sudo sshd -T) /etc/ssh/sshd_config
+	egrep -i '^PubKeyAuthentication yes|^PasswordAuthentication no' <(sshd -T 2> /dev/null) /etc/ssh/sshd_config
 	echo BAD:
-	egrep -i '^PasswordAuthentication yes|^PermitRootLogin yes|^PermitEmptyPasswords yes' <(sudo sshd -T) /etc/ssh/sshd_config
+	egrep -i '^PasswordAuthentication yes|^PermitRootLogin yes|^PermitEmptyPasswords yes' <(sshd -T 2> /dev/null) /etc/ssh/sshd_config
 	echo -- done
 }
 
 if [ -n "$*" ]; then
 	eval "$*" # execute arguments
-	#echo $* finished, ret=$?
+	echo $* finished, ret=$?
 else
 	if [ "$0" != "$BASH_SOURCE" ]; then
 		echo Lib.sh functions are loaded into the shell environment

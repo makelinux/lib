@@ -1,4 +1,4 @@
-/* S PDX-License-Identifier: Apache-2.0
+/* SPDX-License-Identifier: Apache-2.0
  * Copyright (C) 2019 Constantine Shulyupin
  * Original: https://gitlab.com/makelinux/lib/blob/master/tracer.hpp
  */

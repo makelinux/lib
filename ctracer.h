@@ -73,7 +73,6 @@ extern __thread int ctracer_ret;
 #define _entry multistatement(goto _entry_second; _entry_second)
 #endif
 
-
 #define do_statement(a)	do { a } while (0)
 
 /*
